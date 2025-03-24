@@ -392,6 +392,17 @@ guidelines from Section 1.4 of [[RFC9421]]:
           response.
       *   `nonce`, which is a string whose value SHOULD be generated in a
           fashion which guarantees uniqueness.
+
+  4.  Include arbitrary [=signature parameters=] beyond those [specifically
+      registered](https://www.iana.org/assignments/http-message-signature/http-message-signature.xhtml#signature-metadata-parameters).
+      These will have no effect beyond being considered "used for this message
+      signature", and therefore serialized as part of the signature base's
+      `@signature-params`.
+
+      Note: Supporting currently-unknown parameters should make an eventual
+      forward-compatibility story simpler. See the extended discussion in
+      [WICG/signature-based-sri#38](https://github.com/WICG/signature-based-sri/issues/38)
+      for additional context.
   
 :   **Structured Field Types**:
 ::  *   The `unencoded-digest` component references the [:Unencoded-Digest:]
@@ -1005,7 +1016,8 @@ following steps. They return "`verified`" or "`failed`":
         
     6.  Let |signature-params| be the result of executing the algorithm in
         [Section 2.3](https://www.rfc-editor.org/rfc/rfc9421.html#signature-params)
-        of [[!RFC9421]] on |components|.
+        of [[!RFC9421]] on |components|, treating all specified
+        [=structured header/parameters=] as "used for this message signature".
 
     7.  Let |signature base| be the result of executing the algorithm in
         [Section 2.5](https://www.rfc-editor.org/rfc/rfc9421.html#create-sig-input)
