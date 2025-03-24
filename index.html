@@ -4,9 +4,9 @@
   <title>Signature-based Integrity</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version 60c422380, updated Thu Feb 20 19:11:22 2025 -0800" name="generator">
+  <meta content="Bikeshed version b25686b9f, updated Fri Mar 14 14:15:20 2025 -0700" name="generator">
   <link href="https://wicg.github.io/signature-based-sri/" rel="canonical">
-  <meta content="b0feea75a25bb1be8dd21852e2c3e9349f23880d" name="revision">
+  <meta content="65bbd5b2e4ecdfa26aa359af4b79107f0985fa62" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -802,7 +802,7 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <div class="head">
    <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Signature-based Integrity</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-02-26">26 February 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-03-24">24 March 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -1205,6 +1205,13 @@ guidelines from Section 1.4 of <a data-link-type="biblio" href="#biblio-rfc9421"
        <p><code>nonce</code>, which is a string whose value SHOULD be generated in a
   fashion which guarantees uniqueness.</p>
      </ul>
+    <li data-md>
+     <p>Include arbitrary <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="ref-for-signature-params③">signature parameters</a> beyond those <a href="https://www.iana.org/assignments/http-message-signature/http-message-signature.xhtml#signature-metadata-parameters">specifically
+  registered</a>.
+  These will have no effect beyond being considered "used for this message
+  signature", and therefore serialized as part of the signature base’s <code>@signature-params</code>.</p>
+     <p class="note" role="note"><span class="marker">Note:</span> Supporting currently-unknown parameters should make an eventual
+  forward-compatibility story simpler. See the extended discussion in <a href="https://github.com/WICG/signature-based-sri/issues/38">WICG/signature-based-sri#38</a> for additional context.</p>
    </ol>
    <dl>
     <dt data-md><strong>Structured Field Types</strong>:
@@ -1745,7 +1752,7 @@ is greater than the number of seconds between the <a data-link-type="dfn" href="
          <p class="issue" id="issue-e34631ac"><a class="self-link" href="#issue-e34631ac"></a> Should we try to leave some flexibility here for user agents
 to accept recently-expired signatures / deal with clock skew? <a href="https://github.com/wicg/signature-based-sri/issues/34">[Issue #34]</a></p>
         <li data-md>
-         <p>Let <var>signature-params</var> be the result of executing the algorithm in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="42b8a7590">Section 2.3</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>components</var>.</p>
+         <p>Let <var>signature-params</var> be the result of executing the algorithm in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="42b8a7590">Section 2.3</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>components</var>, treating all specified <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-parameters" id="ref-for-name-parameters②">parameters</a> as "used for this message signature".</p>
         <li data-md>
          <p>Let <var>signature base</var> be the result of executing the algorithm in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#create-sig-input">Section 2.5</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>request</var>, |response, and <var>signature-params</var>.</p>
          <p>If this algorithm produces an error, return "<code>failed</code>".</p>
@@ -2458,7 +2465,7 @@ let dfnPanelData = {
 "5c66de35": {"dfnID":"5c66de35","dfnText":"get a structured field value","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-header-list-get-structured-header"}],"title":"2.4.1. Unencoded-Digest Validation"},{"refs":[{"id":"ref-for-concept-header-list-get-structured-header\u2460"},{"id":"ref-for-concept-header-list-get-structured-header\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header"},
 "622b92f5": {"dfnID":"622b92f5","dfnText":"signature base","external":true,"refSections":[{"refs":[{"id":"ref-for-name-creating-the-signature-base"},{"id":"ref-for-name-creating-the-signature-base\u2460"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-name-creating-the-signature-base\u2461"}],"title":"7. An End-to-End Example"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-creating-the-signature-base"},
 "649608b9": {"dfnID":"649608b9","dfnText":"list","external":true,"refSections":[{"refs":[{"id":"ref-for-list"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"}],"url":"https://infra.spec.whatwg.org/#list"},
-"6507a74c": {"dfnID":"6507a74c","dfnText":"signature parameters","external":true,"refSections":[{"refs":[{"id":"ref-for-signature-params"},{"id":"ref-for-signature-params\u2460"},{"id":"ref-for-signature-params\u2461"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"42b8a7590"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#signature-params"},
+"6507a74c": {"dfnID":"6507a74c","dfnText":"signature parameters","external":true,"refSections":[{"refs":[{"id":"ref-for-signature-params"},{"id":"ref-for-signature-params\u2460"},{"id":"ref-for-signature-params\u2461"},{"id":"ref-for-signature-params\u2462"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"42b8a7590"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#signature-params"},
 "65181da8": {"dfnID":"65181da8","dfnText":"secure context","external":true,"refSections":[{"refs":[{"id":"ref-for-secure-context"}],"title":"5.1. Secure Contexts"}],"url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
 "692595fe": {"dfnID":"692595fe","dfnText":"ordered set","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-set"}],"title":"2.1.2. Parse metadata."}],"url":"https://infra.spec.whatwg.org/#ordered-set"},
 "6cfa013d": {"dfnID":"6cfa013d","dfnText":"link","external":true,"refSections":[{"refs":[{"id":"ref-for-the-link-element"}],"title":"1.2. Overview and Threat Model"}],"url":"https://html.spec.whatwg.org/multipage/semantics.html#the-link-element"},
@@ -2467,7 +2474,7 @@ let dfnPanelData = {
 "73e75483": {"dfnID":"73e75483","dfnText":"forgiving-base64 decode","external":true,"refSections":[{"refs":[{"id":"ref-for-forgiving-base64-decode"}],"title":"2.1.4. Validate a signature over response using algorithm and public key"},{"refs":[{"id":"ref-for-forgiving-base64-decode\u2460"},{"id":"ref-for-forgiving-base64-decode\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#forgiving-base64-decode"},
 "75393c04": {"dfnID":"75393c04","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-list-contain\u2460"},{"id":"ref-for-list-contain\u2461"}],"title":"2.1.2. Parse metadata."},{"refs":[{"id":"ref-for-list-contain\u2462"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-list-contain\u2463"},{"id":"ref-for-list-contain\u2464"}],"title":"2.3.2. Matching Integrity Metadata"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
 "75aafb4f": {"dfnID":"75aafb4f","dfnText":"source lists","external":true,"refSections":[{"refs":[{"id":"ref-for-source-lists"},{"id":"ref-for-source-lists\u2460"},{"id":"ref-for-source-lists\u2461"}],"title":"2.3.2. Matching Integrity Metadata"}],"url":"https://w3c.github.io/webappsec-csp/#source-lists"},
-"7660bec4": {"dfnID":"7660bec4","dfnText":"parameters","external":true,"refSections":[{"refs":[{"id":"ref-for-name-parameters"},{"id":"ref-for-name-parameters\u2460"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://www.rfc-editor.org/rfc/rfc9651#name-parameters"},
+"7660bec4": {"dfnID":"7660bec4","dfnText":"parameters","external":true,"refSections":[{"refs":[{"id":"ref-for-name-parameters"},{"id":"ref-for-name-parameters\u2460"},{"id":"ref-for-name-parameters\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://www.rfc-editor.org/rfc/rfc9651#name-parameters"},
 "78d98836": {"dfnID":"78d98836","dfnText":"@request-target","external":true,"refSections":[{"refs":[{"id":"ref-for-name-request-target"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-request-target"},
 "7a3110fb": {"dfnID":"7a3110fb","dfnText":"valid SRI hash algorithm token","external":true,"refSections":[{"refs":[{"id":"ref-for-valid-sri-hash-algorithm-token"},{"id":"ref-for-valid-sri-hash-algorithm-token\u2460"}],"title":"2.1.2. Parse metadata."}],"url":"https://w3c.github.io/webappsec-subresource-integrity/#valid-sri-hash-algorithm-token"},
 "7a87d819": {"dfnID":"7a87d819","dfnText":"is","external":true,"refSections":[{"refs":[{"id":"ref-for-string-is"},{"id":"ref-for-string-is\u2460"}],"title":"2.1.4. Validate a signature over response using algorithm and public key"},{"refs":[{"id":"ref-for-string-is\u2461"},{"id":"ref-for-string-is\u2462"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#string-is"},
