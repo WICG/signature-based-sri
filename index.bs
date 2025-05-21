@@ -145,7 +145,7 @@ This document outlines the changes that would be necessary to [[Fetch]], and
       Content-Type: text/javascript; charset=UTF-8
       Access-Control-Allow-Origin: *
       Unencoded-Digest: sha-512=:[base64-encoded digest of `console.log("Hello, world!");`]:
-      Signature-Input: sig1=("unencoded-digest";sf); keyid="[base64-encoded public key]"; tag="sri"
+      Signature-Input: sig1=("unencoded-digest";sf); keyid="[base64-encoded public key]"; tag="ed25519-integrity"
       Signature: sig1=:[base64-encoded result of Ed25519(signature base)]:
 
       console.log("Hello, world!");
@@ -347,12 +347,8 @@ guidelines from Section 1.4 of [[RFC9421]]:
       *   <a>`keyid`</a>, whose value MUST be a string containing a
           [=forgiving-base64 encode|base64 encoding=] of the public key
           portion of the signature's verification key material.
-      *   <a>`tag`</a>, whose value MUST be the string `sri`
+      *   <a>`tag`</a>, whose value MUST be the string "`ed25519-integrity`".
           
-          ISSUE(34): Perhaps something more specific to make room for
-          variants in the future that have different constraints?
-          `enforce-ed25519-provenance`? `ed25519-integrity`? Etc?
-
   4.  **Not** include the <a>`alg`</a> [=signature parameter=].
 
       Note: The algorithm can be determined unambigiously from the
@@ -450,7 +446,7 @@ guidelines from Section 1.4 of [[RFC9421]]:
 
   Valid [:Signature-Input:] header values would therefore include:
 
-  *   `("unencoded-digest";sf);keyid="MCowBQYDK2VwAyEAJrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"`
+  *   `("unencoded-digest";sf);keyid="MCowBQYDK2VwAyEAJrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"`
 
 </div>
 
@@ -464,12 +460,13 @@ initial complexity under control.
 
 For posterity, this set of requirements has a few helpful implications:
 
-1.  Specifying the `tag` parameter as "`sri`" is a pretty clear signal that the
-    developer is aiming to validate the integrity and/or provenance of a given
-    subresource, and can therefore be reasonably expected to adhere to the set
-    of constraints and processing instructions described in this document.
-    Developers specifying that tag can be expected to be unsurprised when
-    resources are blocked if their signatures don't properly validate.
+1.  Specifying the `tag` parameter as "`ed25519-integrity`" is a pretty clear
+    signal that the developer is aiming to validate the integrity and/or
+    provenance of a given subresource, and can therefore be reasonably expected
+    to adhere to the set of constraints and processing instructions described
+    in this document. Developers specifying that tag can be expected to be
+    unsurprised when resources are blocked if their signatures don't properly
+    validate.
 
 2.  Specifying the `keyid` parameter as a base64 encoding of the signer's public
     key makes it possible for validation to be enforced whether or not the
@@ -635,7 +632,7 @@ following steps. They return `valid` if the signature is valid, or `invalid` oth
     1.  When executing Step 1.1 of the verification algorithm referenced above,
         "determine which signature should be processed for this message" by
         evaluating all signatures whose input's <a>`tag`</a> parameter
-        [=string/is=] "`sri`".
+        [=string/is=] "`ed25519-integrity`".
 
     2.  When executing Step 4 of the verification algorithm, use the [=verification
         requirements for SRI=] described above.
@@ -769,7 +766,7 @@ A request generated from the following HTML element:
 would contain the following header:
 
 ```http
-Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="sri"
+Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="ed25519-integrity"
 ```
 
 If multiple keys are acceptable (e.g. to support key rotation), the [:Accept-Signature:]
@@ -787,8 +784,8 @@ would produce the following header in its request:
 ```http
 NOTE: '\' line wrapping per RFC 8792
 
-Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="sri" \
-                  sig1=("unencoded-digest";sf);keyid="xDnP380zcL4rJ76rXYjeHlfMyPZEOqpJYjsjEppbuXE=";type="sri"
+Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="ed25519-integrity" \
+                  sig1=("unencoded-digest";sf);keyid="xDnP380zcL4rJ76rXYjeHlfMyPZEOqpJYjsjEppbuXE=";type="ed25519-integrity"
 ```
 
 </div>
@@ -815,7 +812,7 @@ To <dfn abstract-op>append the `Accept-Signature` header</dfn> for a [=request=]
 
 7.  For each |signature| in |parsed|["`signatures`"]:   
 
-    1.  Let |value| be the [=string/concatenation=] of « \`<code>sig</code>\`, |counter|, \`<code>=("unencoded-digest";sf);keyid="</code>\`, |signature|["`val`"], \`<code>";type="sri"</code>\` ».
+    1.  Let |value| be the [=string/concatenation=] of « \`<code>sig</code>\`, |counter|, \`<code>=("unencoded-digest";sf);keyid="</code>\`, |signature|["`val`"], \`<code>";type="ed25519-integrity"</code>\` ».
     2.  [=header list/Append=] (\`<code>Accept-Signature</code>\`, |value|) to |request|'s [=request/header list=].
 
 
@@ -1005,7 +1002,7 @@ following steps. They return "`verified`" or "`failed`":
             a [=structured header/string=] which, when [=forgiving-base64 decoded=],
             returns a [=byte sequence=] whose [=byte sequence/length=] is 32.
         3.  |params| [=map/contains=] <a>`tag`</a>, and its value
-            [=string/is=] the [=structured header/string=] "`sri`".
+            [=string/is=] the [=structured header/string=] "`ed25519-integrity`".
 
     5.  If |params| [=map/contains=] <a>`expires`</a>, and |params|["`expires`"]
         is greater than the number of seconds between the [=Unix epoch=] and the
@@ -1185,7 +1182,7 @@ for `/foo.js` cannot be used in a response to `/bar.js`:
 
 ```http
 # This signature is valid only in response to a request for `/foo.js`:
-Signature-Input: sig=("unencoded-digest";sf "@path";req);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+Signature-Input: sig=("unencoded-digest";sf "@path";req);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 Signature: sig=:+ZKRNLfo/O18fxXir85++07TYvkgDFVm29Oz3OExGwWvxy86FOuy0HyQW9xeliv/I7Q8fckzU8Cvbp63kbHpAg==:
 ```
 
@@ -1216,7 +1213,7 @@ of time:
 ```http
 # This resource's signature will fail validation after Jan 1st, 2100.
 # Take _that_, attackers!
-Signature-Input: sig=("unencoded-digest";sf);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+Signature-Input: sig=("unencoded-digest";sf);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 Signature: sig=:2UoEGKEQnN9LULvI05/+kuPSEYsnr2oW7qCqhY1NLvqZXq5uWwpvm4xJNoxdLxVuI1/1bs0aRxnrkLeLI7+eCA==:
 ```
 
@@ -1360,7 +1357,7 @@ Date: Tue, 20 Apr 2021 02:07:56 GMT
 Content-Type: application/json
 Content-Length: 18
 Unencoded-Digest: sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:
-Signature-Input: signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+Signature-Input: signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 
 {"hello": "world"}
 </xmp>
@@ -1372,7 +1369,7 @@ Section 2.3 of [[RFC9421]]. We'll end up with:
 
 ```
 "unencoded-digest";sf: sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:
-"@signature-params": ("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+"@signature-params": ("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 ```
 
 That's the string we'll sign, placing the base64-encoded signature into a
@@ -1384,8 +1381,8 @@ Date: Tue, 20 Apr 2021 02:07:56 GMT
 Content-Type: application/json
 Unencoded-Digest: sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:
 Content-Length: 18
-Signature-Input: signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
-Signature: signature=:gHim9e5Pk2H7c9BStOmxSmkyc8+ioZgoxynu3d4INAT4dwfj5LhvaV9DFnEQ9p7C0hzW4o4Qpkm5aApd6WLLCw==:
+Signature-Input: signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
+Signature: signature=:SbCdPUyjc0IBJjFbVRWs81ucEUcFz87b37nQ63d6kDW+/JvDmET6O5cSdwlddePvlwemLdaWFuY6pQGO+hrkAg==:
 
 {"hello": "world"}
 </xmp>
