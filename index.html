@@ -6,7 +6,7 @@
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
   <meta content="Bikeshed version b25686b9f, updated Fri Mar 14 14:15:20 2025 -0700" name="generator">
   <link href="https://wicg.github.io/signature-based-sri/" rel="canonical">
-  <meta content="65bbd5b2e4ecdfa26aa359af4b79107f0985fa62" name="revision">
+  <meta content="b20d26aa1950fbf3b9083c9de4143b6721920e3c" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -800,9 +800,8 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
  <body class="h-entry">
   <input id="hidedel" style="display:none" type="checkbox">
   <div class="head">
-   <p data-fill-with="logo"><a class="logo" href="https://www.w3.org/"> <img alt="W3C" height="48" src="https://www.w3.org/StyleSheets/TR/2021/logos/W3C" width="72"> </a> </p>
    <h1 class="p-name no-ref" id="title">Signature-based Integrity</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-03-24">24 March 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-05-21">21 May 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -973,7 +972,7 @@ developers are <em>actually</em> composing.</p>
 <c- e>Content-Type</c-><c- o>:</c-> <c- l>text/javascript; charset=UTF-8</c->
 <c- e>Access-Control-Allow-Origin</c-><c- o>:</c-> <c- l>*</c->
 <c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-512=:[base64-encoded digest of `console.log("Hello, world!");`]:</c->
-<c- e>Signature-Input</c-><c- o>:</c-> <c- l>sig1=("unencoded-digest";sf); keyid="[base64-encoded public key]"; tag="sri"</c->
+<c- e>Signature-Input</c-><c- o>:</c-> <c- l>sig1=("unencoded-digest";sf); keyid="[base64-encoded public key]"; tag="ed25519-integrity"</c->
 <c- e>Signature</c-><c- o>:</c-> <c- l>sig1=:[base64-encoded result of Ed25519(signature base)]:</c->
 
 console<c- p>.</c->log<c- p>(</c-><c- u>"Hello, world!"</c-><c- p>);</c->
@@ -1154,9 +1153,7 @@ guidelines from Section 1.4 of <a data-link-type="biblio" href="#biblio-rfc9421"
        <p><a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10"><code>keyid</code></a>, whose value MUST be a string containing a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-encode" id="ref-for-forgiving-base64-encode">base64 encoding</a> of the public key
   portion of the signature’s verification key material.</p>
       <li data-md>
-       <p><a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12"><code>tag</code></a>, whose value MUST be the string <code>sri</code></p>
-       <p class="issue" id="issue-d790eab8"><a class="self-link" href="#issue-d790eab8"></a> Perhaps something more specific to make room for
-  variants in the future that have different constraints? <code>enforce-ed25519-provenance</code>? <code>ed25519-integrity</code>? Etc? <a href="https://github.com/wicg/signature-based-sri/issues/34">[Issue #34]</a></p>
+       <p><a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12"><code>tag</code></a>, whose value MUST be the string "<code>ed25519-integrity</code>".</p>
      </ul>
     <li data-md>
      <p><strong>Not</strong> include the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.8" id="ref-for-section-2.3-4.8"><code>alg</code></a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="ref-for-signature-params①">signature parameter</a>.</p>
@@ -1264,7 +1261,7 @@ base, clients and servers both MUST choose the same order as the
     <p>Valid `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field④">Signature-Input</a></code>` header values would therefore include:</p>
     <ul>
      <li data-md>
-      <p><code>("unencoded-digest";sf);keyid="MCowBQYDK2VwAyEAJrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"</code></p>
+      <p><code>("unencoded-digest";sf);keyid="MCowBQYDK2VwAyEAJrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"</code></p>
     </ul>
    </div>
    <div class="note" role="note">
@@ -1277,12 +1274,13 @@ initial complexity under control.
     <p>For posterity, this set of requirements has a few helpful implications:</p>
     <ol>
      <li data-md>
-      <p>Specifying the <code>tag</code> parameter as "<code>sri</code>" is a pretty clear signal that the
-developer is aiming to validate the integrity and/or provenance of a given
-subresource, and can therefore be reasonably expected to adhere to the set
-of constraints and processing instructions described in this document.
-Developers specifying that tag can be expected to be unsurprised when
-resources are blocked if their signatures don’t properly validate.</p>
+      <p>Specifying the <code>tag</code> parameter as "<code>ed25519-integrity</code>" is a pretty clear
+signal that the developer is aiming to validate the integrity and/or
+provenance of a given subresource, and can therefore be reasonably expected
+to adhere to the set of constraints and processing instructions described
+in this document. Developers specifying that tag can be expected to be
+unsurprised when resources are blocked if their signatures don’t properly
+validate.</p>
      <li data-md>
       <p>Specifying the <code>keyid</code> parameter as a base64 encoding of the signer’s public
 key makes it possible for validation to be enforced whether or not the
@@ -1464,7 +1462,7 @@ following steps. They return <code>valid</code> if the signature is valid, or <c
       <li data-md>
        <p>When executing Step 1.1 of the verification algorithm referenced above,
 "determine which signature should be processed for this message" by
-evaluating all signatures whose input’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12①"><code>tag</code></a> parameter <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is">is</a> "<code>sri</code>".</p>
+evaluating all signatures whose input’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12①"><code>tag</code></a> parameter <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is">is</a> "<code>ed25519-integrity</code>".</p>
       <li data-md>
        <p>When executing Step 4 of the verification algorithm, use the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri③">verification requirements for SRI</a> described above.</p>
       <li data-md>
@@ -1548,7 +1546,7 @@ about the client’s expectations. The header’s value will match the grammar d
         <c- e>integrity</c-><c- o>=</c-><c- s>"ed25519-JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs="</c-><c- p>>&lt;/</c-><c- f>script</c-><c- p>></c->
 </pre>
     <p>would contain the following header:</p>
-<pre class="language-http highlight">Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="sri"
+<pre class="language-http highlight">Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="ed25519-integrity"
 </pre>
     <p>If multiple keys are acceptable (e.g. to support key rotation), the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-accept-signature-field" id="ref-for-name-the-accept-signature-field②">Accept-Signature</a></code>`
 header will contain multiple acceptable signatures. That is, the following HTML:</p>
@@ -1560,8 +1558,8 @@ header will contain multiple acceptable signatures. That is, the following HTML:
     <p>would produce the following header in its request:</p>
 <pre class="language-http highlight">NOTE: '\' line wrapping per RFC 8792
 
-Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="sri" \
-                  sig1=("unencoded-digest";sf);keyid="xDnP380zcL4rJ76rXYjeHlfMyPZEOqpJYjsjEppbuXE=";type="sri"
+Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";type="ed25519-integrity" \
+                  sig1=("unencoded-digest";sf);keyid="xDnP380zcL4rJ76rXYjeHlfMyPZEOqpJYjsjEppbuXE=";type="ed25519-integrity"
 </pre>
    </div>
    <div class="algorithm" data-algorithm="append `accept-signature`">
@@ -1584,7 +1582,7 @@ own application. In this case, the user agent will not set additional
       <p>For each <var>signature</var> in <var>parsed</var>["<code>signatures</code>"]:</p>
       <ol>
        <li data-md>
-        <p>Let <var>value</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenation</a> of « `<code>sig</code>`, <var>counter</var>, `<code>=("unencoded-digest";sf);keyid="</code>`, <var>signature</var>["<code>val</code>"], `<code>";type="sri"</code>` ».</p>
+        <p>Let <var>value</var> be the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate">concatenation</a> of « `<code>sig</code>`, <var>counter</var>, `<code>=("unencoded-digest";sf);keyid="</code>`, <var>signature</var>["<code>val</code>"], `<code>";type="ed25519-integrity"</code>` ».</p>
        <li data-md>
         <p><a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-append" id="ref-for-concept-header-list-append">Append</a> (`<code>Accept-Signature</code>`, <var>value</var>) to <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list②">header list</a>.</p>
       </ol>
@@ -1744,7 +1742,7 @@ from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.wh
 a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-string" id="ref-for-name-string">string</a> which, when <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-decode" id="ref-for-forgiving-base64-decode①">forgiving-base64 decoded</a>,
 returns a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence④">byte sequence</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence-length" id="ref-for-byte-sequence-length③">length</a> is 32.</p>
           <li data-md>
-           <p><var>params</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">contains</a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12②"><code>tag</code></a>, and its value <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is③">is</a> the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-string" id="ref-for-name-string①">string</a> "<code>sri</code>".</p>
+           <p><var>params</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists②">contains</a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12②"><code>tag</code></a>, and its value <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is③">is</a> the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-string" id="ref-for-name-string①">string</a> "<code>ed25519-integrity</code>".</p>
          </ol>
         <li data-md>
          <p>If <var>params</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">contains</a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.4" id="ref-for-section-2.3-4.4①"><code>expires</code></a>, and <var>params</var>["<code>expires</code>"]
@@ -1851,7 +1849,7 @@ covers additional metadata. In particular, including the <a class="css" data-lin
 component as part of the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field①⓪">Signature-Input</a></code>` header will ensure that a response
 for <code>/foo.js</code> cannot be used in a response to <code>/bar.js</code>:</p>
 <pre class="language-http highlight"># This signature is valid only in response to a request for `/foo.js`:
-Signature-Input: sig=("unencoded-digest";sf "@path";req);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+Signature-Input: sig=("unencoded-digest";sf "@path";req);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 Signature: sig=:+ZKRNLfo/O18fxXir85++07TYvkgDFVm29Oz3OExGwWvxy86FOuy0HyQW9xeliv/I7Q8fckzU8Cvbp63kbHpAg==:
 </pre>
     <p>Other derived components can bind a response even more tightly to a request. <a class="css" data-link-type="at-rule"><code>@authority</code></a>, <a class="css" data-link-type="at-rule"><code>@method</code></a>, <a class="css" data-link-type="at-rule"><code>@query</code></a>, <a class="css" data-link-type="at-rule"><code>@status</code></a>, etc
@@ -1872,7 +1870,7 @@ responses. This ensures that resources remain valid only for a finite period
 of time:</p>
 <pre class="language-http highlight"># This resource's signature will fail validation after Jan 1st, 2100.
 # Take _that_, attackers!
-Signature-Input: sig=("unencoded-digest";sf);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+Signature-Input: sig=("unencoded-digest";sf);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 Signature: sig=:2UoEGKEQnN9LULvI05/+kuPSEYsnr2oW7qCqhY1NLvqZXq5uWwpvm4xJNoxdLxVuI1/1bs0aRxnrkLeLI7+eCA==:
 </pre>
     <p>Expiration alone may be good enough. If we decide that additional protections would be
@@ -1973,17 +1971,17 @@ PEM format above, but the following tiny Python script will do the work:</p>
 header that specifies the `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①②">Unencoded-Digest</a></code>` header as a signed component,
 and includes the base64-encoded public key as the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10⑦"><code>keyid</code></a> parameter
 (as discussed in [#profile]):</p>
-<pre class="highlight line-numbered"><span class="line-no"></span><span class="line"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c-> <c- ne>OK</c-></span><span class="line-no"></span><span class="line"><c- e>Date</c-><c- o>:</c-> <c- l>Tue, 20 Apr 2021 02:07:56 GMT</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Type</c-><c- o>:</c-> <c- l>application/json</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Length</c-><c- o>:</c-> <c- l>18</c-></span><span class="line-no"></span><span class="line"><c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:</c-></span><span class="line-no highlight-line" data-line="6"></span><span class="line highlight-line"><c- e>Signature-Input</c-><c- o>:</c-> <c- l>signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"</c-></span><span class="line-no"></span><span class="line"></span><span class="line-no"></span><span class="line"><c- p>{</c-><c- f>"hello"</c-><c- p>:</c-> <c- u>"world"</c-><c- p>}</c-></span></pre>
+<pre class="highlight line-numbered"><span class="line-no"></span><span class="line"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c-> <c- ne>OK</c-></span><span class="line-no"></span><span class="line"><c- e>Date</c-><c- o>:</c-> <c- l>Tue, 20 Apr 2021 02:07:56 GMT</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Type</c-><c- o>:</c-> <c- l>application/json</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Length</c-><c- o>:</c-> <c- l>18</c-></span><span class="line-no"></span><span class="line"><c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:</c-></span><span class="line-no highlight-line" data-line="6"></span><span class="line highlight-line"><c- e>Signature-Input</c-><c- o>:</c-> <c- l>signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"</c-></span><span class="line-no"></span><span class="line"></span><span class="line-no"></span><span class="line"><c- p>{</c-><c- f>"hello"</c-><c- p>:</c-> <c- u>"world"</c-><c- p>}</c-></span></pre>
     <p>Now we have everything we need to construct the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-creating-the-signature-base" id="ref-for-name-creating-the-signature-base②">signature base</a>, following
 the steps described in Section 2.5 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, and choosing the same order
 as the header’s ordering each time it instructs us to "determine an order" in
 Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>. We’ll end up with:</p>
 <pre>"unencoded-digest";sf: sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:
-"@signature-params": ("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"
+"@signature-params": ("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 </pre>
     <p>That’s the string we’ll sign, placing the base64-encoded signature into a
 `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-field" id="ref-for-name-the-signature-field④">Signature</a></code>` header on the response:</p>
-<pre class="highlight line-numbered"><span class="line-no"></span><span class="line"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c-> <c- ne>OK</c-></span><span class="line-no"></span><span class="line"><c- e>Date</c-><c- o>:</c-> <c- l>Tue, 20 Apr 2021 02:07:56 GMT</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Type</c-><c- o>:</c-> <c- l>application/json</c-></span><span class="line-no"></span><span class="line"><c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Length</c-><c- o>:</c-> <c- l>18</c-></span><span class="line-no"></span><span class="line"><c- e>Signature-Input</c-><c- o>:</c-> <c- l>signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="sri"</c-></span><span class="line-no highlight-line" data-line="7"></span><span class="line highlight-line"><c- e>Signature</c-><c- o>:</c-> <c- l>signature=:gHim9e5Pk2H7c9BStOmxSmkyc8+ioZgoxynu3d4INAT4dwfj5LhvaV9DFnEQ9p7C0hzW4o4Qpkm5aApd6WLLCw==:</c-></span><span class="line-no"></span><span class="line"></span><span class="line-no"></span><span class="line"><c- p>{</c-><c- f>"hello"</c-><c- p>:</c-> <c- u>"world"</c-><c- p>}</c-></span></pre>
+<pre class="highlight line-numbered"><span class="line-no"></span><span class="line"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c-> <c- ne>OK</c-></span><span class="line-no"></span><span class="line"><c- e>Date</c-><c- o>:</c-> <c- l>Tue, 20 Apr 2021 02:07:56 GMT</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Type</c-><c- o>:</c-> <c- l>application/json</c-></span><span class="line-no"></span><span class="line"><c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Length</c-><c- o>:</c-> <c- l>18</c-></span><span class="line-no"></span><span class="line"><c- e>Signature-Input</c-><c- o>:</c-> <c- l>signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"</c-></span><span class="line-no highlight-line" data-line="7"></span><span class="line highlight-line"><c- e>Signature</c-><c- o>:</c-> <c- l>signature=:SbCdPUyjc0IBJjFbVRWs81ucEUcFz87b37nQ63d6kDW+/JvDmET6O5cSdwlddePvlwemLdaWFuY6pQGO+hrkAg==:</c-></span><span class="line-no"></span><span class="line"></span><span class="line-no"></span><span class="line"><c- p>{</c-><c- f>"hello"</c-><c- p>:</c-> <c- u>"world"</c-><c- p>}</c-></span></pre>
     <p>Done!</p>
    </div>
   </main>
@@ -2207,6 +2205,8 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
    <dd>M. Nottingham; P-H. Kamp. <a href="https://www.rfc-editor.org/rfc/rfc9651"><cite>Structured Field Values for HTTP</cite></a>. September 2024. Proposed Standard. URL: <a href="https://www.rfc-editor.org/rfc/rfc9651">https://www.rfc-editor.org/rfc/rfc9651</a>
    <dt id="biblio-sri">[SRI]
    <dd>Devdatta Akhawe; et al. <a href="https://w3c.github.io/webappsec-subresource-integrity/"><cite>Subresource Integrity</cite></a>. URL: <a href="https://w3c.github.io/webappsec-subresource-integrity/">https://w3c.github.io/webappsec-subresource-integrity/</a>
+   <dt id="biblio-sri-2">[SRI-2]
+   <dd>Frederik Braun. <a href="https://w3c.github.io/webappsec-subresource-integrity/"><cite>Subresource Integrity</cite></a>. URL: <a href="https://w3c.github.io/webappsec-subresource-integrity/">https://w3c.github.io/webappsec-subresource-integrity/</a>
   </dl>
   <h3 class="no-num no-ref heading settled" id="informative"><span class="content">Informative References</span><a class="self-link" href="#informative"></a></h3>
   <dl>
@@ -2221,8 +2221,6 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
   </dl>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> Perhaps something more specific to make room for
-  variants in the future that have different constraints? <code>enforce-ed25519-provenance</code>? <code>ed25519-integrity</code>? Etc? <a href="https://github.com/wicg/signature-based-sri/issues/34">[Issue #34]</a> <a class="issue-return" href="#issue-d790eab8" title="Jump to section">↵</a></div>
    <div class="issue"> To support this change, we also need to clean up the processing in <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cors-safelisted-request-header">CORS-safelisted request-header</a> to support this header, as discussed in <a href="https://github.com/wicg/signature-based-sri/issues/21">[Issue #21]</a> <a class="issue-return" href="#issue-297cef4f" title="Jump to section">↵</a></div>
    <div class="issue"> Should we try to leave some flexibility here for user agents
 to accept recently-expired signatures / deal with clock skew? <a href="https://github.com/wicg/signature-based-sri/issues/34">[Issue #34]</a> <a class="issue-return" href="#issue-e34631ac" title="Jump to section">↵</a></div>
