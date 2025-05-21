@@ -352,7 +352,7 @@ guidelines from Section 1.4 of [[RFC9421]]:
   4.  **Not** include the <a>`alg`</a> [=signature parameter=].
 
       Note: The algorithm can be determined unambigiously from the
-      <a>`type`</a>, as this profile only supports Ed25519.
+      <a>`tag`</a>, as this profile only supports Ed25519.
       [Section 7.3.6 of RFC9421](https://www.rfc-editor.org/rfc/rfc9421.html#section-7.3.6)
       suggests dropping the <a>`alg`</a> parameter in these cases, which
       is the recommendation we're following here.
@@ -395,7 +395,7 @@ guidelines from Section 1.4 of [[RFC9421]]:
       signature", and therefore serialized as part of the signature base's
       `@signature-params`.
 
-      Note: Supporting currently-unknown parameters should make an eventual
+      Note: Supporting currently-unknown parameters can make an eventual
       forward-compatibility story simpler. See the extended discussion in
       [WICG/signature-based-sri#38](https://github.com/WICG/signature-based-sri/issues/38)
       for additional context.
@@ -621,7 +621,7 @@ headers defined in [[RFC9421]], then compare valid signatures against the
 expected public key.
 
 To <dfn abstract-op lt="validating an integrity signature">validate an integrity signature</dfn>
-over a [=/response=] |response|, [=string=] |algorithm|, and [=string=] |public key|, execute the
+over a [=/response=] |response|, [=/string=] |algorithm|, and [=/string=] |public key|, execute the
 following steps. They return `valid` if the signature is valid, or `invalid` otherwise.
 
 1.  Let |result| be the result of verifying an HTTP Message Signature as defined in
@@ -708,7 +708,7 @@ setting the [:Accept-Signature:] header on outgoing requests based on their
               [=request/integrity metadata=]
             </del>
             <ins>
-              <a abstract-op>Perform client-initiated integrity checks</a> given
+              <a abstract-op>perform client-initiated integrity checks</a> given
               <var ignore>request</var> and <var ignore>internalResponse</var>.
               If the result is "`failed`",
             </ins>
@@ -742,14 +742,14 @@ step between the existing step 13 and 14:
 
   <li><p>If <var>httpRequest</var>'s <a for=request>initiator</a> is "<code>prefetch</code>", then
    <a>set a structured field value</a> given (`<a http-header><code>Sec-Purpose</code></a>`,
-   the <a data-lt="structured field token">token</a> <code>prefetch</code>) in
+   the <a data-lt="structured header">token</a> <code>prefetch</code>) in
    <var>httpRequest</var>'s <a for=request>header list</a>.
   </li>
 </ol>
 
 #### Append `Accept-Signature` #### {#append-accept-signature}
 
-When a [=request=]'s [=request/integrity metadata=] contains signature-based assertions,
+When a [=/request=]'s [=request/integrity metadata=] contains signature-based assertions,
 user agents will attach [:Accept-Signature:] headers to the request to inform servers
 about the client's expectations. The header's value will match the grammar defined in
 [[RFC9421]], and contain the expected public key(s) as <a>`keyid`</a> parameters.
@@ -792,16 +792,16 @@ Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29cl
 
 <div algorithm="append `accept-signature`">
 
-To <dfn abstract-op>append the `Accept-Signature` header</dfn> for a [=request=]
+To <dfn abstract-op>append the `Accept-Signature` header</dfn> for a [=/request=]
 (|request|):
 
 1.  If |request|'s [=request/header list=] [=header list/contains=] [:Accept-Signature:], return.
 
     Note: Developers can set an [:Accept-Signature:] header for use by their
     own application. In this case, the user agent will not set additional
-    [:Accept-Signature:] headers, and may perform a [=CORS-preflight request=].
+    [:Accept-Signature:] headers, and will perform a [=CORS-preflight request=].
 
-2.  If |request|'s [=request/integrity metadata=] is [=string/empty=], return.
+2.  If |request|'s [=request/integrity metadata=] is the empty string, return.
 
 3.  Let |parsed| be the result of executing [$Parse metadata$] on |request|'s
     [=request/integrity metadata=].
@@ -853,13 +853,13 @@ produces.
 
 <div algorithm="matching integrity metadata to CSP">
 
-  To <dfn>match integrity metadata to a source list</dfn> given
+  To <b>match integrity metadata to a source list</b> given
   [=request/integrity metadata=] (|metadata|) and a [=source list=] (|list|),
   execute the following steps, which return "`Matches`" if each relevant item
   in the provided integrity metadata matches one or more source expressions in
   the source list, and "`Does not match`" otherwise:
 
-  1.  Assert: |source list| is not null.
+  1.  Assert: |list| is not null.
 
   2.  Let |parsed| be the result of executing [$Parse metadata$] on |metadata|.
 
@@ -880,8 +880,8 @@ produces.
       2.  If |allowed hashes| does not [=set/contain=] |expected source|,
           return "`Does not match`"
 
-      Note: All hashes in the request's [=request/integrity metadata=] must
-      be present in the [=source list=], as SRI will allow a resource to execute
+      Note: All hashes in the request's [=request/integrity metadata=] are
+      present in the [=source list=], as SRI will allow a resource to execute
       if it matches any such hash. `<script integrity="sha256-[good digest goes here]
       sha256-[bad digest goes here]">` would otherwise create an opportunity to
       bypass the relevant policy.
@@ -900,10 +900,10 @@ produces.
 
   7.  Return "`Matches`".
 
-  Note: Here, we verify only whether the |integrity metadata| is a non-empty
-  subset of the <a grammar>hash-source</a> sources in |source list|. We rely on
-  the browser's enforcement of Subresource Integrity [[!SRI]] to block
-  non-matching resources upon response.
+  Note: Here, we verify only whether the |metadata| is a non-empty subset of the
+  <a grammar>hash-source</a> sources in |source list|. We rely on the browser's
+  enforcement of Subresource Integrity [[!SRI]] to block non-matching resources
+  upon response.
 
 
 Server-Initiated Integrity Checks {#server-initiated}
@@ -990,14 +990,14 @@ following steps. They return "`verified`" or "`failed`":
 
         1.  |components| is a parameterized [=structured header/Inner List=].
         2.  |components| [=list/size=] is 1.
-        3.  |components|[0] [=string/is=] the [=string=] "`unencoded-digest`".
+        3.  |components|[0] [=string/is=] the [=/string=] "`unencoded-digest`".
         4.  |components|[0] has a single [=structured header/parameter=]: <a>`sf`</a>.
 
     3.  Let |params| be |components| [=structured header/parameters=].
 
     4.  If any of the following requirements for |params| are not met, [=continue=]:
 
-        1.  |params| [=map/does not contain=] <a>`alg`</a>.
+        1.  |params| does not [=map/contain=] <a>`alg`</a>.
         2.  |params| [=map/contains=] <a>`keyid`</a>, and its value is
             a [=structured header/string=] which, when [=forgiving-base64 decoded=],
             returns a [=byte sequence=] whose [=byte sequence/length=] is 32.
@@ -1175,7 +1175,7 @@ which creates an opportunity for an attacker to replace both with some other
 piece of content an author has signed.
 
 Authors can defend themselves against this attack by ensuring that the signature
-covers additional metadata. In particular, including the <a>`@path`</a> derived
+covers additional metadata. In particular, including the <a dfn>`@path`</a> derived
 component as part of the [:Signature-Input:] header will ensure that a response
 for `/foo.js` cannot be used in a response to `/bar.js`:
 
@@ -1187,19 +1187,19 @@ Signature: sig=:+ZKRNLfo/O18fxXir85++07TYvkgDFVm29Oz3OExGwWvxy86FOuy0HyQW9xeliv/
 ```
 
 Other derived components can bind a response even more tightly to a request.
-<a>`@authority`</a>, <a>`@method`</a>, <a>`@query`</a>, <a>`@status`</a>, etc
-may all be useful depending on the scenario.
+<a dfn>`@authority`</a>, <a dfn>`@method`</a>, <a dfn>`@query`</a>,
+<a dfn>`@status`</a>, etc may all be useful depending on the scenario.
 
 Note: We do not require any of these derived components to be present in a
 signature today, as they seem somewhat likely to complicate deployments in
 common scenarios. As we gain implementation and deployment experience, we
 might learn that these complications are easier to overcome than expected,
-at which point revisiting the [=validation requirements for SRI=] might well
+at which point revisiting the [=verification requirements for SRI=] might well
 be reasonable.
 
 ### Rollback Attacks ### {#security-rollback}
 
-Even when signing additional metadata like <a>`@path`</a> to prevent
+Even when signing additional metadata like <a dfn>`@path`</a> to prevent
 [[#security-replacement]], there's still room for attackers to deliver an older
 version of a given response (perhaps one containing a vulnerability that was
 later patched). These rollback or downgrade attacks remain possible as long as
@@ -1255,7 +1255,7 @@ We can deal with this problem in a few ways:
 
 2.  We can incorporate redirect responses into the integrity checks, requiring
     that the entire chain be signed with the expected key(s). Redirect responses
-    would be required to sign the <a>`@status`</a> derived component and the
+    would be required to sign the <a dfn>`@status`</a> derived component and the
     [:Location:] header. This signature would be checked against the request's
     [=integrity metadata=], and rejected with a network error if verification
     fails.
