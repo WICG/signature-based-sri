@@ -335,11 +335,6 @@ guidelines from Section 1.4 of [[RFC9421]]:
 
       *   `unencoded-digest`, which MUST include the <a>`sf`</a> parameter and
           no other parameters.
-      
-      Note: We'll extend the set of allowed headers over time. The limitation
-      to `unencoded-digest` is artificial, and aimed towards making a prototype
-      of this approach as simple as possible to implement and evaluate as we
-      decide what makes sense to ship at scale.
 
   3.  Include the following [=signature parameters=] with their associated
       constraints:
@@ -378,7 +373,11 @@ guidelines from Section 1.4 of [[RFC9421]]:
       of [=component identifiers=], without any parameters (as it is pulled from
       the response, not the request).
 
-  3.  Include the following [=signature parameters=], with their associated
+  3.  Include arbitrary HTTP field [=component identifiers=] (subject to the constraints
+      described in 
+      [Section 2.1 of RFC9421](https://www.rfc-editor.org/rfc/rfc9421.html#section-2.1).
+
+  4.  Include the following [=signature parameters=], with their associated
       constraints:
 
       *   <a>`created`</a>, an integer whose value MUST represent a time in the
@@ -389,7 +388,7 @@ guidelines from Section 1.4 of [[RFC9421]]:
       *   `nonce`, which is a string whose value SHOULD be generated in a
           fashion which guarantees uniqueness.
 
-  4.  Include arbitrary [=signature parameters=] beyond those [specifically
+  5.  Include arbitrary [=signature parameters=] beyond those [specifically
       registered](https://www.iana.org/assignments/http-message-signature/http-message-signature.xhtml#signature-metadata-parameters).
       These will have no effect beyond being considered "used for this message
       signature", and therefore serialized as part of the signature base's
@@ -989,9 +988,8 @@ following steps. They return "`verified`" or "`failed`":
         [=continue=]:
 
         1.  |components| is a parameterized [=structured header/Inner List=].
-        2.  |components| [=list/size=] is 1.
-        3.  |components|[0] [=string/is=] the [=/string=] "`unencoded-digest`".
-        4.  |components|[0] has a single [=structured header/parameter=]: <a>`sf`</a>.
+        2.  |components| [=list/contains=] an item which [=string/is=] the [=/string=]
+            "`unencoded-digest`" with a single [=structured header/parameter=]: <a>`sf`</a>.
 
     3.  Let |params| be |components| [=structured header/parameters=].
 
@@ -1018,7 +1016,7 @@ following steps. They return "`verified`" or "`failed`":
 
     7.  Let |signature base| be the result of executing the algorithm in
         [Section 2.5](https://www.rfc-editor.org/rfc/rfc9421.html#create-sig-input)
-        of [[!RFC9421]] on |request|, |response, and |signature-params|.
+        of [[!RFC9421]] on |request|, |response|, and |signature-params|.
         
         If this algorithm produces an error, return "`failed`".
         
@@ -1259,10 +1257,21 @@ We can deal with this problem in a few ways:
     [:Location:] header. This signature would be checked against the request's
     [=integrity metadata=], and rejected with a network error if verification
     fails.
-    
-    ISSUE(WICG/signature-based-sri#45): Adjust the profile accordingly (or
-    create a redirect-variant of the profile, which might be simpler), along
-    with the Fetch integration.
+
+3.  We can provide some optional mechanism as part of the integrity metadata
+    assertion which would require <a dfn>`@path`</a> assertions in the input,
+    and that the signed path match the <{script/src}> attribute value to prevent
+    redirection (e.g. `<script ... integrity='ed25519-...?require-path-match'>`).
+
+    As a variant of this path-based mechanism, we could create some kind of
+    naming mechanism which would function similarly to a nonce, but critically
+    be used every time a specific script was loaded
+    (e.g. `integrity='ed25519-...?name=good.js`) and integrated into the
+    signature.
+
+Note: For the moment, we're leaning on #1, as that seems quite deployable based
+on some early experimental feedback. If it's necessary (or desirable) to verify
+or restrict redirect responses, either #2 or #3 can be layered on as extensions.
 
 
 Privacy Considerations {#privacy}
