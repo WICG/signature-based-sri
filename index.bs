@@ -31,7 +31,7 @@ urlPrefix: https://www.rfc-editor.org/rfc/rfc9651; type: dfn; spec: RFC9651
 urlPrefix: https://w3c.github.io/webappsec-subresource-integrity/; spec: SRI
     type: dfn
         text: valid SRI hash algorithm token
-urlPrefix: https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html; spec: ID.pardue-httpbis-identity-digest
+urlPrefix: https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html; spec: ID.httpbis-unencoded-digest
     type: http-header; 
         text: Unencoded-Digest; url: name-the-unencoded-digest-field
 urlPrefix: https://www.rfc-editor.org/rfc/rfc9421.html; spec: RFC9421
@@ -80,9 +80,9 @@ spec:html; type:element; text:link
   "href": "https://docs.google.com/document/d/1RcUpbpWPxXTyW0Qwczs9GCTLPD3-LcbbhL4ooBUevTM/edit?usp=sharing",
   "title": "PCIv4: SRI gaps and opportunities"
 },
-"ID.pardue-httpbis-identity-digest": {
+"ID.httpbis-unencoded-digest": {
   "authors": [ "Lucas Pardue", "Mike West" ],
-  "href": "https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html",
+  "href": "https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html",
   "title": "HTTP Unencoded Digest"
 }
 }
@@ -401,7 +401,7 @@ guidelines from Section 1.4 of [[RFC9421]]:
   
 :   **Structured Field Types**:
 ::  *   The `unencoded-digest` component references the [:Unencoded-Digest:]
-        header defined in [[ID.pardue-httpbis-identity-digest]]. It is a
+        header defined in [[ID.httpbis-unencoded-digest]]. It is a
         [=structured header/Dictionary=] Structured Field.
 
 :   **Retrieving the Key Material**:
