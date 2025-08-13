@@ -4,9 +4,9 @@
   <title>Signature-based Integrity</title>
   <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
   <link href="https://www.w3.org/StyleSheets/TR/2021/cg-draft" rel="stylesheet">
-  <meta content="Bikeshed version b25686b9f, updated Fri Mar 14 14:15:20 2025 -0700" name="generator">
+  <meta content="Bikeshed version 3f621ba99, updated Mon Jul 28 15:38:36 2025 -0700" name="generator">
   <link href="https://wicg.github.io/signature-based-sri/" rel="canonical">
-  <meta content="d56cd0c64d54426e4d2b35e7b837c00372d67b06" name="revision">
+  <meta content="b8861ee32669156a0e5df005ab7ee3ae48946e10" name="revision">
   <meta content="dark light" name="color-scheme">
   <link href="https://www.w3.org/StyleSheets/TR/2021/dark.css" media="(prefers-color-scheme: dark)" rel="stylesheet" type="text/css">
 <style>
@@ -494,7 +494,7 @@ a[href].issue-return {
 .line-numbered {
     display: grid !important;
     grid-template-columns: min-content 1fr;
-    grid-auto-flow: rows;
+    grid-auto-flow: row;
 }
 .line-numbered > *,
 .line-numbered::before,
@@ -801,7 +801,8 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
   <input id="hidedel" style="display:none" type="checkbox">
   <div class="head">
    <h1 class="p-name no-ref" id="title">Signature-based Integrity</h1>
-   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>, <time class="dt-updated" datetime="2025-05-21">21 May 2025</time></p>
+   <p id="w3c-state"><a href="https://www.w3.org/standards/types/#CG-DRAFT">Draft Community Group Report</a>,
+    <time class="dt-updated" datetime="2025-08-13">13 August 2025</time></p>
    <div data-fill-with="spec-metadata">
     <dl>
      <dt>This version:
@@ -818,7 +819,8 @@ var[data-var-color="6"] { --var-vg: #FFBCF2; }
    </div>
    <div data-fill-with="warning"></div>
    <p class="copyright" data-fill-with="copyright"><a href="https://www.w3.org/policies/#copyright">Copyright</a> © 2025 the Contributors to the Signature-based Integrity Specification, published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a> under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>.
-A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available. </p>
+A human-readable <a href="http://www.w3.org/community/about/agreements/cla-deed/">summary</a> is available.
+</p>
    <hr title="Separator for header">
   </div>
   <div class="p-summary" data-fill-with="abstract">
@@ -831,12 +833,17 @@ properties that seem interesting to explore.</p>
   <div data-fill-with="at-risk"></div>
   <h2 class="no-num no-toc no-ref heading settled" id="status"><span class="content">Status of this document</span></h2>
   <div data-fill-with="status">
-   <p> This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
+   <p>
+  This specification was published by the <a href="https://www.w3.org/community/wicg/">Web Platform Incubator Community Group</a>.
   It is not a W3C Standard nor is it on the W3C Standards Track.
 
-  Please note that under the <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a> there is a limited opt-out and other conditions apply.
+  Please note that under the
+  <a href="https://www.w3.org/community/about/agreements/cla/">W3C Community Contributor License Agreement (CLA)</a>
+  there is a limited opt-out and other conditions apply.
 
-  Learn more about <a href="http://www.w3.org/community/">W3C Community and Business Groups</a>. </p>
+  Learn more about
+  <a href="http://www.w3.org/community/">W3C Community and Business Groups</a>.
+</p>
    <p></p>
   </div>
   <div data-fill-with="at-risk"></div>
@@ -943,7 +950,8 @@ properties that seem interesting to explore.</p>
    <h2 class="heading settled" data-level="1" id="intro"><span class="secno">1. </span><span class="content">Introduction</span><a class="self-link" href="#intro"></a></h2>
    <p><strong>This section is non-normative.</strong></p>
    <p>Subresource Integrity <a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a> defines a mechanism by which developers can
-ensure that script or stylesheet loaded into their pages' contexts are <em>exactly</em> those scripts or stylesheets the developer expected. By specifying
+ensure that script or stylesheet loaded into their pages' contexts are
+<em>exactly</em> those scripts or stylesheets the developer expected. By specifying
 a SHA-256 hash of a resource’s content, any malicious or accidental deviation
 will be blocked before being executed. This is an excellent defense, but its
 deployment turns out to be brittle. If the resource living at a specific URL
@@ -955,9 +963,14 @@ resources they depend upon to update in lockstep. This turns out to be
 alternatives to static hashes that could allow wider deployment of these checks,
 and therefore better understanding of the application experiences that
 developers are <em>actually</em> composing.</p>
-   <p>This document outlines the changes that would be necessary to <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[Fetch]</a>, and <a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a> in order to support the simplest version of a signature-based check:</p>
+   <p>This document outlines the changes that would be necessary to <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[Fetch]</a>, and
+<a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a> in order to support the simplest version of a signature-based check:</p>
    <div class="example" id="basic-example">
-    <a class="self-link" href="#basic-example"></a> Pages will embed an Ed25519 public key assertion into <code>integrity</code> attributes: 
+    <a class="self-link" href="#basic-example"></a>
+  Pages will embed an Ed25519 public key assertion into <code>integrity</code>
+  attributes:
+
+  
 <pre class="highlight"><c- p>&lt;</c-><c- f>script</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://my.cdn/script.js"</c->
         <c- e>crossorigin</c-><c- o>=</c-><c- s>"anonymous"</c->
         <c- e>integrity</c-><c- o>=</c-><c- s>"ed25519-[base64-encoded-public-key]"</c->
@@ -1012,8 +1025,9 @@ developers are aiming for.</p>
    <ol>
     <li data-md>
      <p><strong>Server-initiated integrity checks</strong>: Servers can deliver an
-`<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field">Unencoded-Digest</a></code>` header along with responses that contain one or more
-digests of the response’s content _after_ decoding any <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-codings" id="ref-for-name-content-codings">content codings</a> (gzip, brotli, etc).</p>
+`<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field">Unencoded-Digest</a></code>` header along with responses that contain one or more
+digests of the response’s content _after_ decoding any <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9110.html#name-content-codings" id="ref-for-name-content-codings">content codings</a>
+(gzip, brotli, etc).</p>
      <p>If such a header is present, user agents can enforce it by synthesizing a
 network error if the delivered content does not match the asserted digest.
 See <a href="#monkey-patch-fetch">§ 2.2 Patches to Fetch</a> below for more details.</p>
@@ -1028,12 +1042,14 @@ that the private key’s possessor signed the specific content in question.</p>
      <p>See the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri">verification requirements for SRI</a> described below for more
 detail about these headers' construction.</p>
     <li data-md>
-     <p><strong>Client-initiated integrity checks</strong>: Pages need to be able to specify <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata">integrity metadata</a> for <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script">script</a></code> and <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element">link</a></code> elements that
+     <p><strong>Client-initiated integrity checks</strong>: Pages need to be able to specify
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata">integrity metadata</a> for <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script">script</a></code> and <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/semantics.html#the-link-element" id="ref-for-the-link-element">link</a></code> elements that
 can be matched against the server-initiated checks described above.
 The work necessary is described in <a href="#monkey-patch-sri">§ 2.1 Patches to SRI</a> below.</p>
     <li data-md>
      <p><strong>CSP-driven enforcement</strong>: As described in <a href="https://w3c.github.io/webappsec-csp/#external-hash"><cite>Content Security Policy 3</cite> § 8.4 Allowing external JavaScript via hashes</a>, it’s
-possible today to safely allow JavaScript execution by specifying <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①">integrity metadata</a> on a given element, matching that metadata
+possible today to safely allow JavaScript execution by specifying
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①">integrity metadata</a> on a given element, matching that metadata
 against a page’s active policies, and relying upon SRI to enforce the
 constraints the metadata declares. The same should be possible for
 signatures. The work necessary is described in <a href="#monkey-patch-csp">§ 2.3 Patches to CSP</a> below.</p>
@@ -1041,7 +1057,7 @@ signatures. The work necessary is described in <a href="#monkey-patch-csp">§ 
    <p>Implementing the mechanism in this document therefore requires:</p>
    <ol>
     <li data-md>
-     <p>Implementing `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①">Unencoded-Digest</a></code>` checks, at least for the subset of
+     <p>Implementing `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①">Unencoded-Digest</a></code>` checks, at least for the subset of
 resource types upon which SRI can act: scripts and stylesheets.</p>
     <li data-md>
      <p>Implementing the subset of HTTP Message Signatures required to support the
@@ -1071,14 +1087,15 @@ response if there’s a mismatch. This ensures that we’re meeting the page’s
 requirements for resource inclusion.</p>
     <li data-md>
      <p>Once the response has streamed in, we validate the integrity information
-contained in the `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field②">Unencoded-Digest</a></code>` headers against the response body,
+contained in the `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field②">Unencoded-Digest</a></code>` headers against the response body,
 refusing to execute any mismatched responses.</p>
     <li data-md>
      <p>We’re done, executing probably-safe JavaScript to our heart’s content.</p>
    </ol>
    <p>All of the above rests on the critical assumption  that authors can generate,
 maintain, and use signing keys that attackers cannot obtain. This is not a small
-assumption (see <a href="#deployment-key-management">§ 4.1 Key Management</a> and <a href="#deployment-key-rotation">§ 4.2 Key Rotation</a> below), but it’s one we make elsewhere in the platform, and seems like a
+assumption (see <a href="#deployment-key-management">§ 4.1 Key Management</a> and <a href="#deployment-key-rotation">§ 4.2 Key Rotation</a>
+below), but it’s one we make elsewhere in the platform, and seems like a
 reasonable bar to ask developers to strive towards.</p>
    <h2 class="heading settled" data-level="2" id="monkey-patches"><span class="secno">2. </span><span class="content">Monkey Patches</span><a class="self-link" href="#monkey-patches"></a></h2>
    <p>Extending SRI to support signatures will require changes to three
@@ -1117,7 +1134,8 @@ requirements for signatures intended as proofs of integrity/provenance that can
 be enforced upon by clients without any pre-existing relationship to the server
 which delivered them. This requires locking down the components and properties
 of the signature itself, as well as some of the decision points
-available during the generation of the signature base (Section 2.5 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>).</p>
+available during the generation of the signature base (Section 2.5 of
+<a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>).</p>
    <p>At a high-level, the constraints are simple: this profile supports only Ed25519
 signatures, requires that the public key portion of the verification key
 material be included in the signature’s input, and specifies the ordering of the
@@ -1141,29 +1159,31 @@ guidelines from Section 1.4 of <a data-link-type="biblio" href="#biblio-rfc9421"
        <p><code>unencoded-digest</code>, which MUST include the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#http-field-structured" id="ref-for-http-field-structured"><code>sf</code></a> parameter and
   no other parameters.</p>
      </ul>
-     <p class="note" role="note"><span class="marker">Note:</span> We’ll extend the set of allowed headers over time. The limitation
-  to <code>unencoded-digest</code> is artificial, and aimed towards making a prototype
-  of this approach as simple as possible to implement and evaluate as we
-  decide what makes sense to ship at scale.</p>
     <li data-md>
      <p>Include the following <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="ref-for-signature-params">signature parameters</a> with their associated
   constraints:</p>
      <ul>
       <li data-md>
-       <p><a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10"><code>keyid</code></a>, whose value MUST be a string containing a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-encode" id="ref-for-forgiving-base64-encode">base64 encoding</a> of the public key
+       <p><a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10"><code>keyid</code></a>, whose value MUST be a string containing a
+  <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-encode" id="ref-for-forgiving-base64-encode">base64 encoding</a> of the public key
   portion of the signature’s verification key material.</p>
       <li data-md>
        <p><a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12"><code>tag</code></a>, whose value MUST be the string "<code>ed25519-integrity</code>".</p>
      </ul>
     <li data-md>
      <p><strong>Not</strong> include the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.8" id="ref-for-section-2.3-4.8"><code>alg</code></a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="ref-for-signature-params①">signature parameter</a>.</p>
-     <p class="note" role="note"><span class="marker">Note:</span> The algorithm can be determined unambigiously from the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12①"><code>tag</code></a>, as this profile only supports Ed25519. <a href="https://www.rfc-editor.org/rfc/rfc9421.html#section-7.3.6">Section 7.3.6 of RFC9421</a> suggests dropping the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.8" id="ref-for-section-2.3-4.8①"><code>alg</code></a> parameter in these cases, which
+     <p class="note" role="note"><span class="marker">Note:</span> The algorithm can be determined unambigiously from the
+  <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12①"><code>tag</code></a>, as this profile only supports Ed25519.
+  <a href="https://www.rfc-editor.org/rfc/rfc9421.html#section-7.3.6">Section 7.3.6 of RFC9421</a>
+  suggests dropping the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.8" id="ref-for-section-2.3-4.8①"><code>alg</code></a> parameter in these cases, which
   is the recommendation we’re following here.</p>
    </ol>
    <p>The signature’s input MAY:</p>
    <ol>
     <li data-md>
-     <p>Include the following <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-derived-components" id="ref-for-name-derived-components">derived components</a> as part of the list of <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#covered-components" id="ref-for-covered-components①">component identifiers</a>, each of which MUST include the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.4-2.2.1" id="ref-for-section-2.4-2.2.1"><code>req</code></a> parameter and no other paramters (as they are pulled from the request,
+     <p>Include the following <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-derived-components" id="ref-for-name-derived-components">derived components</a> as part of the list of
+  <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#covered-components" id="ref-for-covered-components①">component identifiers</a>, each of which MUST include the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.4-2.2.1" id="ref-for-section-2.4-2.2.1"><code>req</code></a>
+  parameter and no other paramters (as they are pulled from the request,
   not the response):</p>
      <ul>
       <li data-md>
@@ -1188,6 +1208,10 @@ guidelines from Section 1.4 of <a data-link-type="biblio" href="#biblio-rfc9421"
   of <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#covered-components" id="ref-for-covered-components②">component identifiers</a>, without any parameters (as it is pulled from
   the response, not the request).</p>
     <li data-md>
+     <p>Include arbitrary HTTP field <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#covered-components" id="ref-for-covered-components③">component identifiers</a> (subject to the constraints
+  described in 
+  <a href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.1">Section 2.1 of RFC9421</a>.</p>
+    <li data-md>
      <p>Include the following <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="ref-for-signature-params②">signature parameters</a>, with their associated
   constraints:</p>
      <ul>
@@ -1206,17 +1230,21 @@ guidelines from Section 1.4 of <a data-link-type="biblio" href="#biblio-rfc9421"
      <p>Include arbitrary <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="ref-for-signature-params③">signature parameters</a> beyond those <a href="https://www.iana.org/assignments/http-message-signature/http-message-signature.xhtml#signature-metadata-parameters">specifically
   registered</a>.
   These will have no effect beyond being considered "used for this message
-  signature", and therefore serialized as part of the signature base’s <code>@signature-params</code>.</p>
+  signature", and therefore serialized as part of the signature base’s
+  <code>@signature-params</code>.</p>
      <p class="note" role="note"><span class="marker">Note:</span> Supporting currently-unknown parameters can make an eventual
-  forward-compatibility story simpler. See the extended discussion in <a href="https://github.com/WICG/signature-based-sri/issues/38">WICG/signature-based-sri#38</a> for additional context.</p>
+  forward-compatibility story simpler. See the extended discussion in
+  <a href="https://github.com/WICG/signature-based-sri/issues/38">WICG/signature-based-sri#38</a>
+  for additional context.</p>
    </ol>
    <dl>
     <dt data-md><strong>Structured Field Types</strong>:
     <dd data-md>
      <ul>
       <li data-md>
-       <p>The <code>unencoded-digest</code> component references the `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field③">Unencoded-Digest</a></code>`
-header defined in <a data-link-type="biblio" href="#biblio-idpardue-httpbis-identity-digest" title="HTTP Unencoded Digest">[ID.pardue-httpbis-identity-digest]</a>. It is a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary">Dictionary</a> Structured Field.</p>
+       <p>The <code>unencoded-digest</code> component references the `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field③">Unencoded-Digest</a></code>`
+header defined in <a data-link-type="biblio" href="#biblio-idhttpbis-unencoded-digest" title="HTTP Unencoded Digest">[ID.httpbis-unencoded-digest]</a>. It is a
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary">Dictionary</a> Structured Field.</p>
      </ul>
     <dt data-md><strong>Retrieving the Key Material</strong>:
     <dd data-md>
@@ -1250,14 +1278,16 @@ on the usage of response data.</p>
     <dd data-md>
      <p>The HTTP Message Signature must be delivered with a response.</p>
     <dd data-md>
-     <p>The `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field④">Unencoded-Digest</a></code>` header must be <a data-link-type="dfn" href="#unencoded-digest-valid-for-sri" id="ref-for-unencoded-digest-valid-for-sri">valid for SRI</a>.</p>
+     <p>The `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field④">Unencoded-Digest</a></code>` header must be <a data-link-type="dfn" href="#unencoded-digest-valid-for-sri" id="ref-for-unencoded-digest-valid-for-sri">valid for SRI</a>.</p>
     <dd data-md>
      <p>When instructed to "determine an order" while constructing the signature
 base, clients and servers both MUST choose the same order as the
 `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field③">Signature-Input</a></code>` header they consume or produce, respectively.</p>
    </dl>
    <div class="example" id="example-verification-requirements">
-    <a class="self-link" href="#example-verification-requirements"></a> 
+    <a class="self-link" href="#example-verification-requirements"></a>
+
+
     <p>Valid `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field④">Signature-Input</a></code>` header values would therefore include:</p>
     <ul>
      <li data-md>
@@ -1265,12 +1295,15 @@ base, clients and servers both MUST choose the same order as the
     </ul>
    </div>
    <div class="note" role="note">
-     Note: These requirements are fairly draconian, allowing only a very small subset
+    
+Note: These requirements are fairly draconian, allowing only a very small subset
 of the flexibility allowed by the HTTP Message Signature format. It is entirely
 probable that we can expand the scope of allowed signature inputs in the future,
 but as we’re figuring out how to do signature validation on the client it seems
 prudent to provide as much strict guidance as possible in order to keep the
-initial complexity under control. 
+initial complexity under control.
+
+
     <p>For posterity, this set of requirements has a few helpful implications:</p>
     <ol>
      <li data-md>
@@ -1313,11 +1346,13 @@ the client will expect the signature base to represent.</p>
    </div>
    <h5 class="heading settled" data-level="2.1.1.1" id="unencoded-digest-validation-for-sri"><span class="secno">2.1.1.1. </span><span class="content"><code>Unencoded-Digest</code> Validation for SRI</span><a class="self-link" href="#unencoded-digest-validation-for-sri"></a></h5>
    <div class="algorithm" data-algorithm="valid for SRI" data-algorithm-for="Unencoded-Digest">
-    <p>An `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑤">Unencoded-Digest</a></code>` <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header" id="ref-for-concept-header">header</a> (<var>header</var>) is <dfn class="dfn-paneled" data-dfn-for="Unencoded-Digest" data-dfn-type="dfn" data-noexport id="unencoded-digest-valid-for-sri">valid for SRI</dfn> if the following steps return
+    <p>An `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑤">Unencoded-Digest</a></code>` <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header" id="ref-for-concept-header">header</a> (<var>header</var>) is
+<dfn class="dfn-paneled" data-dfn-for="Unencoded-Digest" data-dfn-type="dfn" data-noexport id="unencoded-digest-valid-for-sri">valid for SRI</dfn> if the following steps return
 "<code>valid</code>":</p>
     <ol>
      <li data-md>
-      <p>Let <var>parsed</var> be the result of <a data-link-type="abstract-op" href="https://www.rfc-editor.org/rfc/rfc9651.html#text-parse" id="ref-for-text-parse">parsing structured fields</a> with <code>input_string</code> set to <var>header</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-value" id="ref-for-concept-header-value">value</a>, and <code>header_type</code> set to
+      <p>Let <var>parsed</var> be the result of <a data-link-type="abstract-op" href="https://www.rfc-editor.org/rfc/rfc9651.html#text-parse" id="ref-for-text-parse">parsing structured fields</a> with <code>input_string</code>
+set to <var>header</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-value" id="ref-for-concept-header-value">value</a>, and <code>header_type</code> set to
 "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary①"><code>dictionary</code></a>".</p>
      <li data-md>
       <p>If parsing failed or if <var>parsed</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-is-empty" id="ref-for-map-is-empty">is empty</a>, return "<code>invalid</code>".</p>
@@ -1326,7 +1361,8 @@ the client will expect the signature base to represent.</p>
      <li data-md>
       <p>If <var>value</var> is not a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence">byte sequence</a>, return "<code>invalid</code>".</p>
      <li data-md>
-      <p>If <var>key</var> is not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contained within</a> the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a> « "sha-256", "sha-384", "sha-512" », return "<code>invalid</code>".</p>
+      <p>If <var>key</var> is not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain">contained within</a> the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list" id="ref-for-list">list</a>
+  « "sha-256", "sha-384", "sha-512" », return "<code>invalid</code>".</p>
      <li data-md>
       <p>If <var>key</var> is "<code>sha-256</code>", and <var>value</var>’s <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence-length" id="ref-for-byte-sequence-length">length</a> is
   not 32, return "<code>invalid</code>".</p>
@@ -1344,9 +1380,12 @@ the client will expect the signature base to represent.</p>
    <p>First, we’ll define valid signature algorithms:</p>
    <ul>
     <li data-md>
-     <ins>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-sri-signature-algorithm-token-set">valid SRI signature algorithm token set</dfn> is the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set">ordered set</a> « "<code>ed25519</code>" » (corresponding to Ed25519 <a data-link-type="biblio" href="#biblio-rfc8032" title="Edwards-Curve Digital Signature Algorithm (EdDSA)">[RFC8032]</a>).</ins>
+     <ins>The <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-sri-signature-algorithm-token-set">valid SRI signature algorithm token set</dfn> is the
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-set" id="ref-for-ordered-set">ordered set</a> « "<code>ed25519</code>" » (corresponding to Ed25519 <a data-link-type="biblio" href="#biblio-rfc8032" title="Edwards-Curve Digital Signature Algorithm (EdDSA)">[RFC8032]</a>).</ins>
     <li data-md>
-     <ins>A string is a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-sri-signature-algorithm-token">valid SRI signature algorithm token</dfn> if its <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-lowercase" id="ref-for-ascii-lowercase">ASCII lowercase</a> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain①">contained</a> in the <a data-link-type="dfn" href="#valid-sri-signature-algorithm-token-set" id="ref-for-valid-sri-signature-algorithm-token-set">valid SRI signature algorithm token set</a>.</ins>
+     <ins>A string is a <dfn class="dfn-paneled" data-dfn-type="dfn" data-noexport id="valid-sri-signature-algorithm-token">valid SRI signature algorithm token</dfn> if its
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ascii-lowercase" id="ref-for-ascii-lowercase">ASCII lowercase</a> is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain①">contained</a> in the
+<a data-link-type="dfn" href="#valid-sri-signature-algorithm-token-set" id="ref-for-valid-sri-signature-algorithm-token-set">valid SRI signature algorithm token set</a>.</ins>
    </ul>
    <p>Then, we’ll adjust SRI’s <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-parse-metadata">Parse <var>metadata</var></dfn>. algorithm as
 follows:</p>
@@ -1358,23 +1397,28 @@ of signature expressions which are likewise understood:</p>
      <p>
       Let <var>result</var> be 
       <del>the empty set</del>
-      <ins>the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a> «[ "hashes" → « », "signatures" → « » ]».</ins>
+      <ins>the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#ordered-map" id="ref-for-ordered-map">ordered map</a>
+«[ "hashes" → « », "signatures" → « » ]».</ins>
      </p>
     <li data-md>
-     <p>For each <var>item</var> returned by <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#strictly-split" id="ref-for-strictly-split">splitting</a> <var>metadata</var> on spaces:</p>
+     <p>For each <var>item</var> returned by <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#strictly-split" id="ref-for-strictly-split">splitting</a>
+<var>metadata</var> on spaces:</p>
      <ol>
       <li data-md>
-       <p>Let <var>expression-and-options</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#strictly-split" id="ref-for-strictly-split①">splitting</a> <var>item</var> on U+003F (?).</p>
+       <p>Let <var>expression-and-options</var> be the result of
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#strictly-split" id="ref-for-strictly-split①">splitting</a> <var>item</var> on U+003F (?).</p>
       <li data-md>
        <p>Let <var>algorithm-expression</var> be <var>expression-and-options</var>[0].</p>
       <li data-md>
        <p>Let <var>base64-value</var> be the empty string.</p>
       <li data-md>
-       <p>Let <var>algorithm-and-value</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#strictly-split" id="ref-for-strictly-split②">splitting</a> <var>algorithm-expression</var> on U+002D (-).</p>
+       <p>Let <var>algorithm-and-value</var> be the result of
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#strictly-split" id="ref-for-strictly-split②">splitting</a> <var>algorithm-expression</var> on U+002D (-).</p>
       <li data-md>
        <p>Let <var>algorithm</var> be <var>algorithm-and-value</var>[0].</p>
       <li data-md>
-       <p>If <var>algorithm-and-value</var>[1] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain②">exists</a>, set <var>base64-value</var> to <var>algorithm-and-value</var>[1].</p>
+       <p>If <var>algorithm-and-value</var>[1] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain②">exists</a>, set
+<var>base64-value</var> to <var>algorithm-and-value</var>[1].</p>
       <li data-md>
        <del>If <var>algorithm</var> is not a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-subresource-integrity/#valid-sri-hash-algorithm-token" id="ref-for-valid-sri-hash-algorithm-token">valid SRI hash algorithm token</a>, then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue">continue</a>.</del>
       <li data-md>
@@ -1406,7 +1450,9 @@ the <a href="https://w3c.github.io/webappsec-csp/#multiple-policies">application
 relevant HTTP response header. For the moment, let’s simply pass in the
 entire <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response">response</a> (<var>response</var>), as that makes the integration with <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> somewhat
 explicable.</p>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-perform-client-initiated-integrity-checks">perform client-initiated integrity checks</dfn> for a given <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence①">byte sequence</a> (<var>bytes</var>), <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> (<var>request</var>), and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a> (<var>response</var>), execute the following steps. They return "<code>passed</code>" or "<code>failed</code>":</p>
+   <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-perform-client-initiated-integrity-checks">perform client-initiated integrity checks</dfn> for a given
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence①">byte sequence</a> (<var>bytes</var>), <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request">request</a> (<var>request</var>), and <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response①">response</a>
+(<var>response</var>), execute the following steps. They return "<code>passed</code>" or "<code>failed</code>":</p>
    <ol>
     <li data-md>
      <p>Let <var>parsedMetadata</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-parse-metadata" id="ref-for-abstract-opdef-parse-metadata">Parse metadata</a> on <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata③">integrity metadata</a>.</p>
@@ -1430,7 +1476,8 @@ explicable.</p>
       <li data-md>
        <p>Let <var>actualValue</var> be the result of <a href="https://w3c.github.io/webappsec-subresource-integrity/#apply-algorithm-to-response"><cite>SRI</cite> § 3.3.1 Apply algorithm to bytes</a> on <var>algorithm</var> and <var>bytes</var>.</p>
       <li data-md>
-       <p>If <var>actualValue</var> is a case-sensitive match for <var>expectedValue</var>, set <var>hash-match</var> to <code>true</code> and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break">break</a>.</p>
+       <p>If <var>actualValue</var> is a case-sensitive match for
+<var>expectedValue</var>, set <var>hash-match</var> to <code>true</code> and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break">break</a>.</p>
      </ol>
     <li data-md>
      <p>For each <var>item</var> in <var>signature-metadata</var>:</p>
@@ -1440,7 +1487,8 @@ explicable.</p>
       <li data-md>
        <p>Let <var>public key</var> be the <var>item</var>["<code>val</code>"].</p>
       <li data-md>
-       <p>Let <var>result</var> be the result of <a data-link-type="abstract-op" href="#abstract-opdef-validating-an-integrity-signature" id="ref-for-abstract-opdef-validating-an-integrity-signature">validating an integrity signature</a> over <var>request</var> and <var>response</var> using <var>algorithm</var> and <var>public key</var>.</p>
+       <p>Let <var>result</var> be the result of <a data-link-type="abstract-op" href="#abstract-opdef-validating-an-integrity-signature" id="ref-for-abstract-opdef-validating-an-integrity-signature">validating an integrity signature</a>
+over <var>request</var> and <var>response</var> using <var>algorithm</var> and <var>public key</var>.</p>
       <li data-md>
        <p>If <var>result</var> is "<code>valid</code>", set <var>signature-match</var> to <code>true</code> and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-break" id="ref-for-iteration-break①">break</a>.</p>
      </ol>
@@ -1453,30 +1501,37 @@ Let’s write that down. At core, it will execute the Ed25519 validation steps
 from <a data-link-type="biblio" href="#biblio-rfc8032" title="Edwards-Curve Digital Signature Algorithm (EdDSA)">[RFC8032]</a> using signatures extracted from HTTP Message Signature
 headers defined in <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, then compare valid signatures against the
 expected public key.</p>
-   <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export data-lt="validating an integrity signature" id="abstract-opdef-validating-an-integrity-signature">validate an integrity signature</dfn> over a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response②">response</a> <var>response</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a> <var>algorithm</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a> <var>public key</var>, execute the
+   <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export data-lt="validating an integrity signature" id="abstract-opdef-validating-an-integrity-signature">validate an integrity signature</dfn>
+over a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response②">response</a> <var>response</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string">string</a> <var>algorithm</var>, and <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string①">string</a> <var>public key</var>, execute the
 following steps. They return <code>valid</code> if the signature is valid, or <code>invalid</code> otherwise.</p>
    <ol>
     <li data-md>
-     <p>Let <var>result</var> be the result of verifying an HTTP Message Signature as defined in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#name-verifying-a-signature">Section 3.2</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, given <var>response</var> as the signature context, the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri②">verification requirements for SRI</a>, and the following processing instructions:</p>
+     <p>Let <var>result</var> be the result of verifying an HTTP Message Signature as defined in
+<a href="https://www.rfc-editor.org/rfc/rfc9421.html#name-verifying-a-signature">Section 3.2</a>
+of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, given <var>response</var> as the signature context, the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri②">verification requirements for SRI</a>, and the following processing instructions:</p>
      <ol>
       <li data-md>
        <p>When executing Step 1.1 of the verification algorithm referenced above,
 "determine which signature should be processed for this message" by
-evaluating all signatures whose input’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12②"><code>tag</code></a> parameter <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is">is</a> "<code>ed25519-integrity</code>".</p>
+evaluating all signatures whose input’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12②"><code>tag</code></a> parameter
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is">is</a> "<code>ed25519-integrity</code>".</p>
       <li data-md>
        <p>When executing Step 4 of the verification algorithm, use the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri③">verification requirements for SRI</a> described above.</p>
       <li data-md>
        <p>When executing Step 5 of the verification algorithm:</p>
        <ol>
         <li data-md>
-         <p>"Determine the verification key material" by <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-decode" id="ref-for-forgiving-base64-decode">base64 decoding</a> the signature input’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10②"><code>keyid</code></a> parameter.</p>
+         <p>"Determine the verification key material" by
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-decode" id="ref-for-forgiving-base64-decode">base64 decoding</a> the signature input’s
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10②"><code>keyid</code></a> parameter.</p>
         <li data-md>
          <p>"Determine the trustworthiness of the key material" by comparing
 the signature input’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10③"><code>keyid</code></a> parameter to <var>public key</var>.
 If the two do not match, fail validation for this signature.</p>
        </ol>
       <li data-md>
-       <p class="assertion">Assert: When executing Step 6, the result of "Determine the algorithm" <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is①">is</a> "<code>ed25519</code>" due to the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri④">verification requirements for SRI</a> applied above.</p>
+       <p class="assertion">Assert: When executing Step 6, the result of "Determine the algorithm"
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is①">is</a> "<code>ed25519</code>" due to the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri④">verification requirements for SRI</a> applied above.</p>
      </ol>
     <li data-md>
      <p>If <var>result</var> is failure, return "<code>invalid</code>".</p>
@@ -1485,7 +1540,7 @@ If the two do not match, fail validation for this signature.</p>
    </ol>
    <h3 class="heading settled" data-level="2.2" id="monkey-patch-fetch"><span class="secno">2.2. </span><span class="content">Patches to Fetch</span><a class="self-link" href="#monkey-patch-fetch"></a></h3>
    <p>Support for this feature would require changes to <a href="https://fetch.spec.whatwg.org/#main-fetch"><cite>Fetch</cite> § 4.1 Main fetch</a> to support
-enforcement of server-initiated integrity checks through `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑥">Unencoded-Digest</a></code>`,
+enforcement of server-initiated integrity checks through `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑥">Unencoded-Digest</a></code>`,
 `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-field" id="ref-for-name-the-signature-field②">Signature</a></code>`, and `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field⑦">Signature-Input</a></code>`, and to pass the right set of information
 into the version of <a href="https://w3c.github.io/webappsec-subresource-integrity/#does-response-match-metadatalist"><cite>SRI</cite> § 3.3.4 Do bytes match metadataList?</a> altered by this
 specification in order to enable signature-based checks that require information
@@ -1493,33 +1548,63 @@ from the request (<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#c
 and properties for signature components on the other) and the response (integrity
 headers and the body).</p>
    <p>It would also require changes to <a href="https://fetch.spec.whatwg.org/#http-network-or-cache-fetch"><cite>Fetch</cite> § 4.5 HTTP-network-or-cache fetch</a> to support
-setting the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-accept-signature-field" id="ref-for-name-the-accept-signature-field">Accept-Signature</a></code>` header on outgoing requests based on their <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑤">integrity metadata</a>.</p>
+setting the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-accept-signature-field" id="ref-for-name-the-accept-signature-field">Accept-Signature</a></code>` header on outgoing requests based on their
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑤">integrity metadata</a>.</p>
    <h4 class="heading settled" data-level="2.2.1" id="monkey-patch-main-fetch"><span class="secno">2.2.1. </span><span class="content">Main Fetch</span><a class="self-link" href="#monkey-patch-main-fetch"></a></h4>
    <p><a href="https://fetch.spec.whatwg.org/#main-fetch"><cite>Fetch</cite> § 4.1 Main fetch</a> step 22 will be updated as follows:</p>
    <ol class="algorithm" data-algorithm="monkey patching Main Fetch" start="21">
     <li>
-      If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑥">integrity metadata</a> is not the empty string, 
-     <ins>or <var>internalResponse</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain③">contains</a> `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑦">Unencoded-Digest</a></code>`,</ins>
-      then: 
+     
+    If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑥">integrity metadata</a> is not the empty string,
+    
+     <ins>or <var>internalResponse</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list">header list</a>
+    <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain③">contains</a> `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑦">Unencoded-Digest</a></code>`,</ins>
+      then:
+
+    
      <ol>
-      <li> Let <var>processBodyError</var> be this step: run <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-finale" id="ref-for-fetch-finale">fetch response handover</a> given <var>fetchParams</var> and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error①">network error</a>. 
-      <li> If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body" id="ref-for-concept-response-body">body</a> is null, then run <var>processBodyError</var> and
-        abort these steps. 
       <li>
-        Let <var>processBody</var> given <var>bytes</var> be these steps: 
+        Let <var>processBodyError</var> be this step: run <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-finale" id="ref-for-fetch-finale">fetch response handover</a>
+        given <var>fetchParams</var> and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-network-error" id="ref-for-concept-network-error①">network error</a>.
+      
+      <li>
+        If <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body" id="ref-for-concept-response-body">body</a> is null, then run <var>processBodyError</var> and
+        abort these steps.
+      
+      <li>
+       
+        Let <var>processBody</var> given <var>bytes</var> be these steps:
+
+        
        <ol>
         <li>
-         <ins> <a data-link-type="abstract-op" href="#abstract-opdef-perform-server-initiated-integrity-checks" id="ref-for-abstract-opdef-perform-server-initiated-integrity-checks">Perform
-            server-initiated integrity checks</a> on <var>bytes</var>, <var>request</var>, and <var>internalResponse</var>.
+         <ins>
+            <a data-link-type="abstract-op" href="#abstract-opdef-perform-server-initiated-integrity-checks" id="ref-for-abstract-opdef-perform-server-initiated-integrity-checks">Perform
+            server-initiated integrity checks</a> on <var>bytes</var>,
+            <var>request</var>, and <var>internalResponse</var>.
             If the result is "<code>failed</code>", then run <var>processBodyError</var> and
-            abort these steps. </ins>
+            abort these steps.
+          </ins>
         <li>
-         <del> If <var>bytes</var> do not match <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑦">integrity metadata</a> </del>
-         <ins> <a data-link-type="abstract-op" href="#abstract-opdef-perform-client-initiated-integrity-checks" id="ref-for-abstract-opdef-perform-client-initiated-integrity-checks">perform client-initiated integrity checks</a> given <var>request</var> and <var>internalResponse</var>.
-              If the result is "<code>failed</code>", </ins>
-          then run <var>processBodyError</var> and abort these steps. <a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a> 
-        <li> Set <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body" id="ref-for-concept-response-body①">body</a> to <var>bytes</var> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#byte-sequence-as-a-body" id="ref-for-byte-sequence-as-a-body">as a body</a>. 
-        <li> Run <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-finale" id="ref-for-fetch-finale①">fetch response handover</a> given <var>fetchParams</var> and <var>response</var>. 
+         <del>
+              If <var>bytes</var> do not match <var>request</var>’s
+              <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑦">integrity metadata</a>
+            </del>
+         <ins>
+              <a data-link-type="abstract-op" href="#abstract-opdef-perform-client-initiated-integrity-checks" id="ref-for-abstract-opdef-perform-client-initiated-integrity-checks">perform client-initiated integrity checks</a> given
+              <var>request</var> and <var>internalResponse</var>.
+              If the result is "<code>failed</code>",
+            </ins>
+         
+            then run <var>processBodyError</var> and abort these steps. <a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a>
+          
+        <li>
+            Set <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-body" id="ref-for-concept-response-body①">body</a> to <var>bytes</var>
+            <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#byte-sequence-as-a-body" id="ref-for-byte-sequence-as-a-body">as a body</a>.
+          
+        <li>
+            Run <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#fetch-finale" id="ref-for-fetch-finale①">fetch response handover</a> given <var>fetchParams</var> and <var>response</var>.
+          
        </ol>
      </ol>
    </ol>
@@ -1530,17 +1615,26 @@ step between the existing step 13 and 14:</p>
     <li>
      <p><a data-link-type="abstract-op" href="https://w3c.github.io/webappsec-fetch-metadata/#abstract-opdef-append-the-fetch-metadata-headers-for-a-request" id="ref-for-abstract-opdef-append-the-fetch-metadata-headers-for-a-request">Append the Fetch metadata headers for <var>httpRequest</var></a>. <a data-link-type="biblio" href="#biblio-fetch-metadata" title="Fetch Metadata Request Headers">[FETCH-METADATA]</a></p>
     <li>
-     <ins> <a data-link-type="abstract-op" href="#abstract-opdef-append-the-accept-signature-header" id="ref-for-abstract-opdef-append-the-accept-signature-header">Append the <code>Accept-Signature</code> header</a> for <var>httpRequest</var>. </ins>
+     <ins>
+    <a data-link-type="abstract-op" href="#abstract-opdef-append-the-accept-signature-header" id="ref-for-abstract-opdef-append-the-accept-signature-header">Append the <code>Accept-Signature</code> header</a> for <var>httpRequest</var>.
+  </ins>
     <li>
-     <p>If <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a> is "<code>prefetch</code>", then <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header" id="ref-for-concept-header-list-set-structured-header">set a structured field value</a> given (<code>&lt;a http-header>&lt;code>Sec-Purpose&lt;/code>&lt;/a></code>,
-   the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-introduction" id="ref-for-name-introduction">token</a> <code>prefetch</code>) in <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list">header list</a>. </p>
+     <p>If <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-initiator" id="ref-for-concept-request-initiator">initiator</a> is "<code>prefetch</code>", then
+   <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header" id="ref-for-concept-header-list-set-structured-header">set a structured field value</a> given (<code>&lt;a http-header>&lt;code>Sec-Purpose&lt;/code>&lt;/a></code>,
+   the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-introduction" id="ref-for-name-introduction">token</a> <code>prefetch</code>) in
+   <var>httpRequest</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list">header list</a>.
+  </p>
    </ol>
    <h5 class="heading settled" data-level="2.2.2.1" id="append-accept-signature"><span class="secno">2.2.2.1. </span><span class="content">Append <code>Accept-Signature</code></span><a class="self-link" href="#append-accept-signature"></a></h5>
    <p>When a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request①">request</a>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑧">integrity metadata</a> contains signature-based assertions,
 user agents will attach `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-accept-signature-field" id="ref-for-name-the-accept-signature-field①">Accept-Signature</a></code>` headers to the request to inform servers
-about the client’s expectations. The header’s value will match the grammar defined in <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, and contain the expected public key(s) as <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10④"><code>keyid</code></a> parameters.</p>
+about the client’s expectations. The header’s value will match the grammar defined in
+<a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, and contain the expected public key(s) as <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10④"><code>keyid</code></a> parameters.</p>
    <div class="example" id="example-accept-signature">
-    <a class="self-link" href="#example-accept-signature"></a> A request generated from the following HTML element: 
+    <a class="self-link" href="#example-accept-signature"></a>
+A request generated from the following HTML element:
+
+
 <pre class="language-html highlight"><c- p>&lt;</c-><c- f>script</c-> <c- e>src</c-><c- o>=</c-><c- s>"https://my.cdn/script.js"</c->
         <c- e>crossorigin</c-><c- o>=</c-><c- s>"anonymous"</c->
         <c- e>integrity</c-><c- o>=</c-><c- s>"ed25519-JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs="</c-><c- p>>&lt;/</c-><c- f>script</c-><c- p>></c->
@@ -1563,7 +1657,8 @@ Accept-Signature: sig0=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29cl
 </pre>
    </div>
    <div class="algorithm" data-algorithm="append `accept-signature`">
-    <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-append-the-accept-signature-header">append the <code>Accept-Signature</code> header</dfn> for a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request②">request</a> (<var>request</var>):</p>
+    <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-append-the-accept-signature-header">append the <code>Accept-Signature</code> header</dfn> for a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request②">request</a>
+(<var>request</var>):</p>
     <ol>
      <li data-md>
       <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-header-list" id="ref-for-concept-request-header-list①">header list</a> <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#header-list-contains" id="ref-for-header-list-contains">contains</a> `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-accept-signature-field" id="ref-for-name-the-accept-signature-field③">Accept-Signature</a></code>`, return.</p>
@@ -1573,7 +1668,8 @@ own application. In this case, the user agent will not set additional
      <li data-md>
       <p>If <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata⑨">integrity metadata</a> is the empty string, return.</p>
      <li data-md>
-      <p>Let <var>parsed</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-parse-metadata" id="ref-for-abstract-opdef-parse-metadata①">Parse metadata</a> on <var>request</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①⓪">integrity metadata</a>.</p>
+      <p>Let <var>parsed</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-parse-metadata" id="ref-for-abstract-opdef-parse-metadata①">Parse metadata</a> on <var>request</var>’s
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①⓪">integrity metadata</a>.</p>
      <li data-md>
       <p>If <var>parsed</var>["<code>signatures</code>"] is <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-empty" id="ref-for-list-empty③">empty</a>, return.</p>
      <li data-md>
@@ -1588,9 +1684,11 @@ own application. In this case, the user agent will not set additional
       </ol>
     </ol>
    </div>
-   <p class="issue" id="issue-297cef4f"><a class="self-link" href="#issue-297cef4f"></a> To support this change, we also need to clean up the processing in <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cors-safelisted-request-header" id="ref-for-cors-safelisted-request-header">CORS-safelisted request-header</a> to support this header, as discussed in <a href="https://github.com/wicg/signature-based-sri/issues/21">[Issue #21]</a></p>
+   <p class="issue" id="issue-297cef4f"><a class="self-link" href="#issue-297cef4f"></a> To support this change, we also need to clean up the processing in
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cors-safelisted-request-header" id="ref-for-cors-safelisted-request-header">CORS-safelisted request-header</a> to support this header, as discussed in <a href="https://github.com/wicg/signature-based-sri/issues/21">[Issue #21]</a></p>
    <h3 class="heading settled" data-level="2.3" id="monkey-patch-csp"><span class="secno">2.3. </span><span class="content">Patches to CSP</span><a class="self-link" href="#monkey-patch-csp"></a></h3>
-   <p>We’ll adjust CSP to support matching signature-based assertions in <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①①">integrity metadata</a> alongside the existing support for hashes (as described
+   <p>We’ll adjust CSP to support matching signature-based assertions in
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①①">integrity metadata</a> alongside the existing support for hashes (as described
 in <a href="https://w3c.github.io/webappsec-csp/#external-hash"><cite>Content Security Policy 3</cite> § 8.4 Allowing external JavaScript via hashes</a>).</p>
    <h4 class="heading settled" data-level="2.3.1" id="csp-grammar"><span class="secno">2.3.1. </span><span class="content">Grammar</span><a class="self-link" href="#csp-grammar"></a></h4>
    <p>We’ll add the following ABNF rules <a data-link-type="biblio" href="#biblio-rfc5234" title="Augmented BNF for Syntax Specifications: ABNF">[RFC5234]</a> to support Ed25519 public keys,
@@ -1608,7 +1706,8 @@ and add this new rule to the existing <a data-link-type="grammar" href="https://
 to match the new integrity metadata structure that <a data-link-type="abstract-op" href="#abstract-opdef-parse-metadata" id="ref-for-abstract-opdef-parse-metadata②">Parse metadata</a> now
 produces.</p>
    <div class="algorithm" data-algorithm="matching integrity metadata to CSP">
-    <p>To <b>match integrity metadata to a source list</b> given <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①②">integrity metadata</a> (<var>metadata</var>) and a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a> (<var>list</var>),
+    <p>To <b>match integrity metadata to a source list</b> given
+  <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①②">integrity metadata</a> (<var>metadata</var>) and a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists">source list</a> (<var>list</var>),
   execute the following steps, which return "<code>Matches</code>" if each relevant item
   in the provided integrity metadata matches one or more source expressions in
   the source list, and "<code>Does not match</code>" otherwise:</p>
@@ -1618,9 +1717,11 @@ produces.</p>
      <li data-md>
       <p>Let <var>parsed</var> be the result of executing <a data-link-type="abstract-op" href="#abstract-opdef-parse-metadata" id="ref-for-abstract-opdef-parse-metadata③">Parse metadata</a> on <var>metadata</var>.</p>
      <li data-md>
-      <p>Let <var>allowed hashes</var> be the set of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expressions</a> in <var>source list</var> that match the <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-hash-source" id="ref-for-grammardef-hash-source①"><code>hash-source</code></a> grammar.</p>
+      <p>Let <var>allowed hashes</var> be the set of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression">source expressions</a> in <var>source list</var>
+  that match the <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-hash-source" id="ref-for-grammardef-hash-source①"><code>hash-source</code></a> grammar.</p>
      <li data-md>
-      <p>Let <var>allowed public keys</var> be the set of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression①">source expressions</a> in <var>source list</var> that match the <a data-link-type="grammar" href="#grammardef-public-key-source" id="ref-for-grammardef-public-key-source①"><code>public-key-source</code></a> grammar.</p>
+      <p>Let <var>allowed public keys</var> be the set of <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression①">source expressions</a> in
+  <var>source list</var> that match the <a data-link-type="grammar" href="#grammardef-public-key-source" id="ref-for-grammardef-public-key-source①"><code>public-key-source</code></a> grammar.</p>
      <li data-md>
       <p>If <var>parsed</var>["hashes"] and <var>parsed</var>["signatures"] are both empty, return
   "<code>Does not match</code>".</p>
@@ -1628,7 +1729,8 @@ produces.</p>
       <p>For each <var>hash</var> in <var>parsed</var>["hashes"]:</p>
       <ol>
        <li data-md>
-        <p>Let <var>expected source</var> be a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression②">source expression</a> formed from the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenation</a> of «<var>hash</var>["alg"], "<code>-</code>", <var>hash</var>["val"]».</p>
+        <p>Let <var>expected source</var> be a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression②">source expression</a> formed from the
+  <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate①">concatenation</a> of «<var>hash</var>["alg"], "<code>-</code>", <var>hash</var>["val"]».</p>
        <li data-md>
         <p>If <var>allowed hashes</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain④">contain</a> <var>expected source</var>,
   return "<code>Does not match</code>"</p>
@@ -1641,26 +1743,33 @@ produces.</p>
       <p>For each <var>public key</var> in <var>parsed</var>["signatures"]:</p>
       <ol>
        <li data-md>
-        <p>Let <var>expected source</var> be a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression③">source expression</a> formed from the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate②">concatenation</a> of «<var>public key</var>["alg"], "<code>-</code>", <var>public key</var>["val"]».</p>
+        <p>Let <var>expected source</var> be a <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-expression" id="ref-for-source-expression③">source expression</a> formed from the
+  <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-concatenate" id="ref-for-string-concatenate②">concatenation</a> of «<var>public key</var>["alg"], "<code>-</code>",
+  <var>public key</var>["val"]».</p>
        <li data-md>
         <p>If <var>allowed public keys</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain⑤">contain</a> <var>expected source</var>,
   return "<code>Does not match</code>"</p>
       </ol>
-      <p class="note" role="note"><span class="marker">Note:</span> As above, we require all relevant keys to be allowed by the <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists②">source list</a>.</p>
+      <p class="note" role="note"><span class="marker">Note:</span> As above, we require all relevant keys to be allowed by the
+  <a data-link-type="dfn" href="https://w3c.github.io/webappsec-csp/#source-lists" id="ref-for-source-lists②">source list</a>.</p>
      <li data-md>
       <p>Return "<code>Matches</code>".</p>
     </ol>
-    <p class="note" role="note"><span class="marker">Note:</span> Here, we verify only whether the <var>metadata</var> is a non-empty subset of the <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-hash-source" id="ref-for-grammardef-hash-source②">hash-source</a> sources in <var>source list</var>. We rely on the browser’s
+    <p class="note" role="note"><span class="marker">Note:</span> Here, we verify only whether the <var>metadata</var> is a non-empty subset of the
+  <a data-link-type="grammar" href="https://w3c.github.io/webappsec-csp/#grammardef-hash-source" id="ref-for-grammardef-hash-source②">hash-source</a> sources in <var>source list</var>. We rely on the browser’s
   enforcement of Subresource Integrity <a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a> to block non-matching resources
   upon response.</p>
     <h3 class="heading settled" data-level="2.4" id="server-initiated"><span class="secno">2.4. </span><span class="content">Server-Initiated Integrity Checks</span><a class="self-link" href="#server-initiated"></a></h3>
     <div class="algorithm" data-algorithm="server-initiated integrity checks">
      <p class="note" role="note"><span class="marker">Note:</span> This set of algorithms could live either in <a data-link-type="biblio" href="#biblio-fetch" title="Fetch Standard">[Fetch]</a> or <a data-link-type="biblio" href="#biblio-sri" title="Subresource Integrity">[SRI]</a>.</p>
-     <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-perform-server-initiated-integrity-checks">perform server-initiated integrity checks</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence②">byte sequence</a> (<var>bytes</var>), a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request③">request</a> (<var>request</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response③">response</a> (<var>response</var>), execute the following steps. They return "<code>passed</code>" or
+     <p>To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-perform-server-initiated-integrity-checks">perform server-initiated integrity checks</dfn> given a
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence②">byte sequence</a> (<var>bytes</var>), a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request③">request</a> (<var>request</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response③">response</a>
+(<var>response</var>), execute the following steps. They return "<code>passed</code>" or
 "<code>failed</code>" as appropriate:</p>
      <ol>
       <li data-md>
-       <p><a data-link-type="abstract-op" href="#abstract-opdef-verify-unencoded-digest-assertions" id="ref-for-abstract-opdef-verify-unencoded-digest-assertions">Verify <code>Identify-Digest</code> assertions</a> for <var>bytes</var> and <var>response</var>. If the
+       <p><a data-link-type="abstract-op" href="#abstract-opdef-verify-unencoded-digest-assertions" id="ref-for-abstract-opdef-verify-unencoded-digest-assertions">Verify
+<code>Identify-Digest</code> assertions</a> for <var>bytes</var> and <var>response</var>. If the
 result is "<code>failed</code>", return "<code>failed</code>".</p>
       <li data-md>
        <p><a data-link-type="abstract-op" href="#abstract-opdef-verify-sri-message-signature-assertions" id="ref-for-abstract-opdef-verify-sri-message-signature-assertions">Verify SRI
@@ -1672,11 +1781,16 @@ If the result is "<code>failed</code>", return "<code>failed</code>".</p>
     </div>
     <h4 class="heading settled" data-level="2.4.1" id="unencoded-digest-validation"><span class="secno">2.4.1. </span><span class="content"><code>Unencoded-Digest</code> Validation</span><a class="self-link" href="#unencoded-digest-validation"></a></h4>
     <div class="algorithm" data-algorithm="unencoded-digest validation">
-      To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-verify-unencoded-digest-assertions">verify <code>Unencoded-Digest</code> assertions</dfn> given a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence③">byte sequence</a> (<var>bytes</var>) and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response④">response</a> (<var>response</var>), execute the
-following steps. They return "<code>verified</code>" or "<code>failed</code>": 
+     
+To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-verify-unencoded-digest-assertions">verify <code>Unencoded-Digest</code> assertions</dfn> given a
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence③">byte sequence</a> (<var>bytes</var>) and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response④">response</a> (<var>response</var>), execute the
+following steps. They return "<code>verified</code>" or "<code>failed</code>":
+
+
      <ol>
       <li data-md>
-       <p>Let <var>header</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header">getting</a> the `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑧">Unencoded-Digest</a></code>` header as a "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary②"><code>dictionary</code></a>"
+       <p>Let <var>header</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header">getting</a>
+the `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑧">Unencoded-Digest</a></code>` header as a "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary②"><code>dictionary</code></a>"
 from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list①">header list</a>.</p>
       <li data-md>
        <p>If <var>header</var> is <code>null</code>, return "<code>verified</code>".</p>
@@ -1686,7 +1800,8 @@ from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.wh
         <li data-md>
          <p>If <var>alg</var> is not one of "sha-256", "sha-384", or "sha-512", then <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue①">continue</a>.</p>
         <li data-md>
-         <p>Let <var>body digest</var> be the result of executing <a href="https://w3c.github.io/webappsec-subresource-integrity/#apply-algorithm-to-response"><cite>SRI</cite> § 3.3.1 Apply algorithm to bytes</a> on <var>alg</var> and <var>bytes</var>.</p>
+         <p>Let <var>body digest</var> be the result of executing <a href="https://w3c.github.io/webappsec-subresource-integrity/#apply-algorithm-to-response"><cite>SRI</cite> § 3.3.1 Apply algorithm to bytes</a>
+on <var>alg</var> and <var>bytes</var>.</p>
         <li data-md>
          <p>If <var>body digest</var> matches <var>digest</var>, continue.</p>
         <li data-md>
@@ -1696,7 +1811,7 @@ from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.wh
        <p>Return "<code>verified</code>".</p>
      </ol>
      <p class="note" role="note"><span class="marker">Note:</span> This algorithm requires <em>all</em> valid digests delivered via
-`<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑨">Unencoded-Digest</a></code>` to match the response’s decoded body. Since the server
+`<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field⑨">Unencoded-Digest</a></code>` to match the response’s decoded body. Since the server
 controls both the body and the headers, it seems unnecessary to allow the
 flexibility of allowing the asserted digests to match more than one resource
 (as we do in client-initiated checks, which need to support servers' content
@@ -1704,30 +1819,35 @@ negotiation).</p>
     </div>
     <h4 class="heading settled" data-level="2.4.2" id="signature-enforcement"><span class="secno">2.4.2. </span><span class="content"><code>Signature</code> and <code>Signature-Input</code> Enforcement</span><a class="self-link" href="#signature-enforcement"></a></h4>
     <div class="algorithm" data-algorithm="signature validation">
-      To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-verify-sri-message-signature-assertions">verify <code>SRI</code> Message Signature assertions</dfn> given a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request④">request</a> (<var>request</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response⑤">response</a> (<var>response</var>), execute the
-following steps. They return "<code>verified</code>" or "<code>failed</code>": 
+     
+To <dfn class="dfn-paneled" data-dfn-type="abstract-op" data-export id="abstract-opdef-verify-sri-message-signature-assertions">verify <code>SRI</code> Message Signature assertions</dfn> given a
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request" id="ref-for-concept-request④">request</a> (<var>request</var>), and a <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response" id="ref-for-concept-response⑤">response</a> (<var>response</var>), execute the
+following steps. They return "<code>verified</code>" or "<code>failed</code>":
+
+
      <ol>
       <li data-md>
-       <p>Let <var>inputs</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header①">getting</a> the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field⑧">Signature-Input</a></code>` header as a "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary③"><code>dictionary</code></a>"
+       <p>Let <var>inputs</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header①">getting</a>
+the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field⑧">Signature-Input</a></code>` header as a "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary③"><code>dictionary</code></a>"
 from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list②">header list</a>.</p>
       <li data-md>
-       <p>Let <var>signatures</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header②">getting</a> the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-field" id="ref-for-name-the-signature-field③">Signature</a></code>` header as a "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary④"><code>dictionary</code></a>" from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list③">header list</a>.</p>
+       <p>Let <var>signatures</var> be the result of <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-header-list-get-structured-header" id="ref-for-concept-header-list-get-structured-header②">getting</a>
+the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-field" id="ref-for-name-the-signature-field③">Signature</a></code>` header as a "<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-dictionary" id="ref-for-name-dictionary④"><code>dictionary</code></a>" from
+<var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-response-header-list" id="ref-for-concept-response-header-list③">header list</a>.</p>
       <li data-md>
        <p><a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-iterate" id="ref-for-map-iterate②">For each</a> <var>key</var> → <var>components</var> of <var>inputs</var>:</p>
        <ol>
         <li data-md>
          <p>If <var>signatures</var> does not <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists">contain</a> <var>key</var>, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue②">continue</a>.</p>
         <li data-md>
-         <p>If any of the following requirements for <var>components</var> are not met, <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue③">continue</a>:</p>
+         <p>If any of the following requirements for <var>components</var> are not met,
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#iteration-continue" id="ref-for-iteration-continue③">continue</a>:</p>
          <ol>
           <li data-md>
            <p><var>components</var> is a parameterized <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-inner-list" id="ref-for-name-inner-list">Inner List</a>.</p>
           <li data-md>
-           <p><var>components</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-size" id="ref-for-list-size">size</a> is 1.</p>
-          <li data-md>
-           <p><var>components</var>[0] <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is②">is</a> the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a> "<code>unencoded-digest</code>".</p>
-          <li data-md>
-           <p><var>components</var>[0] has a single <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-parameters" id="ref-for-name-parameters">parameter</a>: <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#http-field-structured" id="ref-for-http-field-structured①"><code>sf</code></a>.</p>
+           <p><var>components</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#list-contain" id="ref-for-list-contain⑥">contains</a> an item which <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is②">is</a> the <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string" id="ref-for-string②">string</a>
+"<code>unencoded-digest</code>" with a single <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-parameters" id="ref-for-name-parameters">parameter</a>: <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#http-field-structured" id="ref-for-http-field-structured①"><code>sf</code></a>.</p>
          </ol>
         <li data-md>
          <p>Let <var>params</var> be <var>components</var> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-parameters" id="ref-for-name-parameters①">parameters</a>.</p>
@@ -1741,24 +1861,34 @@ from <var>response</var>’s <a data-link-type="dfn" href="https://fetch.spec.wh
 a <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-string" id="ref-for-name-string">string</a> which, when <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-decode" id="ref-for-forgiving-base64-decode①">forgiving-base64 decoded</a>,
 returns a <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence" id="ref-for-byte-sequence④">byte sequence</a> whose <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#byte-sequence-length" id="ref-for-byte-sequence-length③">length</a> is 32.</p>
           <li data-md>
-           <p><var>params</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">contains</a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12③"><code>tag</code></a>, and its value <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is③">is</a> the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-string" id="ref-for-name-string①">string</a> "<code>ed25519-integrity</code>".</p>
+           <p><var>params</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists③">contains</a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.12" id="ref-for-section-2.3-4.12③"><code>tag</code></a>, and its value
+<a data-link-type="dfn" href="https://infra.spec.whatwg.org/#string-is" id="ref-for-string-is③">is</a> the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-string" id="ref-for-name-string①">string</a> "<code>ed25519-integrity</code>".</p>
          </ol>
         <li data-md>
          <p>If <var>params</var> <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#map-exists" id="ref-for-map-exists④">contains</a> <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.4" id="ref-for-section-2.3-4.4①"><code>expires</code></a>, and <var>params</var>["<code>expires</code>"]
-is greater than the number of seconds between the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch">Unix epoch</a> and the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#wall-clock-unsafe-current-time" id="ref-for-wall-clock-unsafe-current-time">unsafe current time</a>, return "<code>failed</code>".</p>
+is greater than the number of seconds between the <a data-link-type="dfn" href="https://w3c.github.io/hr-time/#dfn-unix-epoch" id="ref-for-dfn-unix-epoch">Unix epoch</a> and the
+<a data-link-type="dfn" href="https://w3c.github.io/hr-time/#wall-clock-unsafe-current-time" id="ref-for-wall-clock-unsafe-current-time">unsafe current time</a>, return "<code>failed</code>".</p>
          <p class="issue" id="issue-e34631ac"><a class="self-link" href="#issue-e34631ac"></a> Should we try to leave some flexibility here for user agents
 to accept recently-expired signatures / deal with clock skew? <a href="https://github.com/wicg/signature-based-sri/issues/34">[Issue #34]</a></p>
         <li data-md>
-         <p>Let <var>signature-params</var> be the result of executing the algorithm in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="42b8a7590">Section 2.3</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>components</var>, treating all specified <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-parameters" id="ref-for-name-parameters②">parameters</a> as "used for this message signature".</p>
+         <p>Let <var>signature-params</var> be the result of executing the algorithm in
+<a href="https://www.rfc-editor.org/rfc/rfc9421.html#signature-params" id="42b8a7590">Section 2.3</a>
+of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>components</var>, treating all specified
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9651#name-parameters" id="ref-for-name-parameters②">parameters</a> as "used for this message signature".</p>
         <li data-md>
-         <p>Let <var>signature base</var> be the result of executing the algorithm in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#create-sig-input">Section 2.5</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>request</var>, |response, and <var>signature-params</var>.</p>
+         <p>Let <var>signature base</var> be the result of executing the algorithm in
+<a href="https://www.rfc-editor.org/rfc/rfc9421.html#create-sig-input">Section 2.5</a>
+of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a> on <var>request</var>, <var>response</var>, and <var>signature-params</var>.</p>
          <p>If this algorithm produces an error, return "<code>failed</code>".</p>
          <p class="note" role="note"><span class="marker">Note:</span> Errors here might represent invalid component or parameter names,
 missing headers, etc.</p>
         <li data-md>
-         <p>Let <var>public key</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-decode" id="ref-for-forgiving-base64-decode②">forgiving-base64 decoding</a> <var>params</var>["<code>keyid</code>"].</p>
+         <p>Let <var>public key</var> be the result of <a data-link-type="dfn" href="https://infra.spec.whatwg.org/#forgiving-base64-decode" id="ref-for-forgiving-base64-decode②">forgiving-base64 decoding</a>
+<var>params</var>["<code>keyid</code>"].</p>
         <li data-md>
-         <p>Execute Ed25519’s "<code>Verify</code>" algorithm as defined in <a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.7">Section 5.1.7</a> of <a data-link-type="biblio" href="#biblio-rfc8023" title="Report from the Workshop and Prize on Root Causes and Mitigation of Name Collisions">[RFC8023]</a>, to verify the signature <var>signatures</var>["<code>key</code>"] over the
+         <p>Execute Ed25519’s "<code>Verify</code>" algorithm as defined in
+<a href="https://rfc-editor.org/rfc/rfc8032#section-5.1.7">Section 5.1.7</a> of
+<a data-link-type="biblio" href="#biblio-rfc8023" title="Report from the Workshop and Prize on Root Causes and Mitigation of Name Collisions">[RFC8023]</a>, to verify the signature <var>signatures</var>["<code>key</code>"] over the
 message <var>signature base</var> using <var>public key</var>.</p>
         <li data-md>
          <p>If verification failed, return "<code>failed</code>".</p>
@@ -1766,7 +1896,9 @@ message <var>signature base</var> using <var>public key</var>.</p>
       <li data-md>
        <p>Return "<code>verified</code>".</p>
      </ol>
-     <p class="note" role="note"><span class="marker">Note:</span> This is a reformulation and simplification of the steps described in <a href="https://www.rfc-editor.org/rfc/rfc9421.html#name-verifying-a-signature">Section 3.2</a> of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, making the integration with the <a href="#profile">§ 2.1.1 The SRI HTTP Message Signature Profile</a> described above
+     <p class="note" role="note"><span class="marker">Note:</span> This is a reformulation and simplification of the steps described in
+<a href="https://www.rfc-editor.org/rfc/rfc9421.html#name-verifying-a-signature">Section 3.2</a>
+of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Message Signatures">[RFC9421]</a>, making the integration with the <a href="#profile">§ 2.1.1 The SRI HTTP Message Signature Profile</a> described above
 explict.</p>
      <p class="note" role="note"><span class="marker">Note:</span> This algorithm requires <em>all</em> valid signatures delivered with the response
 to be verified in order to return "<code>verified</code>"</p>
@@ -1793,7 +1925,8 @@ aspects of the web PKI to chain trust, allow delegation, etc. That seems like
 more than we need today, and substantially more work. Perhaps something small
 is good enough?</p>
     <h3 class="heading settled" data-level="4.2" id="deployment-key-rotation"><span class="secno">4.2. </span><span class="content">Key Rotation</span><a class="self-link" href="#deployment-key-rotation"></a></h3>
-    <p>Since this design relies on websites pinning a specific public key in the <code>integrity</code> attribute, this design does not easily support key rotation. If a
+    <p>Since this design relies on websites pinning a specific public key in the
+<code>integrity</code> attribute, this design does not easily support key rotation. If a
 signing key is compromised, there is no easy way to rotate the key and ensure
 that reliant websites check signatures against an updated public key.</p>
     <p>For now, we think this is probably enough. If the key is compromised, the
@@ -1809,7 +1942,8 @@ resource, so it will be possible to support rotation in a coordinated way
 without requiring each entity to move in lockstep.</p>
     <h3 class="heading settled" data-level="4.3" id="deployment-key-discovery"><span class="secno">4.3. </span><span class="content">Key Discovery</span><a class="self-link" href="#deployment-key-discovery"></a></h3>
     <p>Servers that support this feature need to include the public key used to
-validate a resource’s signature in the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field⑨">Signature-Input</a></code>` header’s <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10⑥"><code>keyid</code></a> signature parameter. Developer who wish to enforce signature
+validate a resource’s signature in the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field⑨">Signature-Input</a></code>` header’s
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10⑥"><code>keyid</code></a> signature parameter. Developer who wish to enforce signature
 validation against a particular key can do so by requesting the relevant
 resource, and extracting the key from its headers and inserting it into,
 for example, a <code><a data-link-type="element" href="https://html.spec.whatwg.org/multipage/scripting.html#script" id="ref-for-script②">script</a></code>’s <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity" id="ref-for-attr-script-integrity①">integrity</a></code> attribute.</p>
@@ -1834,12 +1968,13 @@ Servers can likewise defend against this risk by minting fresh keys for each
 interesting resource. This, of course, creates more key-management problems,
 but it might be a reasonable tradeoff.</p>
     <h3 class="heading settled" data-level="5.3" id="security-substitution"><span class="secno">5.3. </span><span class="content">Substitution Attacks</span><a class="self-link" href="#security-substitution"></a></h3>
-    <p>Signature checks described here can prevent attackers from delivering <em>arbitrary</em> content in response to requests, but they remain capable of using
+    <p>Signature checks described here can prevent attackers from delivering
+<em>arbitrary</em> content in response to requests, but they remain capable of using
 any code a developer has signed with a given key. Two categories of attack are
 worth considering in a bit more detail:</p>
     <h4 class="heading settled" data-level="5.3.1" id="security-replacement"><span class="secno">5.3.1. </span><span class="content">Content Replacement</span><a class="self-link" href="#security-replacement"></a></h4>
     <p>In the simplest case allowed, the signature delivered with a response covers
-only the `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①⓪">Unencoded-Digest</a></code>` header, and therefore the response body. Integrity
+only the `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①⓪">Unencoded-Digest</a></code>` header, and therefore the response body. Integrity
 checks on the response only verify consistency between the headers and the body,
 which creates an opportunity for an attacker to replace both with some other
 piece of content an author has signed.</p>
@@ -1851,7 +1986,9 @@ for <code>/foo.js</code> cannot be used in a response to <code>/bar.js</code>:</
 Signature-Input: sig=("unencoded-digest";sf "@path";req);expires=4102444800;keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"
 Signature: sig=:+ZKRNLfo/O18fxXir85++07TYvkgDFVm29Oz3OExGwWvxy86FOuy0HyQW9xeliv/I7Q8fckzU8Cvbp63kbHpAg==:
 </pre>
-    <p>Other derived components can bind a response even more tightly to a request. <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-authority" id="ref-for-name-authority①"><code>@authority</code></a>, <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-method" id="ref-for-name-method①"><code>@method</code></a>, <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-query" id="ref-for-name-query①"><code>@query</code></a>, <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-status-code" id="ref-for-name-status-code①"><code>@status</code></a>, etc may all be useful depending on the scenario.</p>
+    <p>Other derived components can bind a response even more tightly to a request.
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-authority" id="ref-for-name-authority①"><code>@authority</code></a>, <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-method" id="ref-for-name-method①"><code>@method</code></a>, <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-query" id="ref-for-name-query①"><code>@query</code></a>,
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-status-code" id="ref-for-name-status-code①"><code>@status</code></a>, etc may all be useful depending on the scenario.</p>
     <p class="note" role="note"><span class="marker">Note:</span> We do not require any of these derived components to be present in a
 signature today, as they seem somewhat likely to complicate deployments in
 common scenarios. As we gain implementation and deployment experience, we
@@ -1859,11 +1996,13 @@ might learn that these complications are easier to overcome than expected,
 at which point revisiting the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri⑤">verification requirements for SRI</a> might well
 be reasonable.</p>
     <h4 class="heading settled" data-level="5.3.2" id="security-rollback"><span class="secno">5.3.2. </span><span class="content">Rollback Attacks</span><a class="self-link" href="#security-rollback"></a></h4>
-    <p>Even when signing additional metadata like <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-path" id="ref-for-name-path②"><code>@path</code></a> to prevent <a href="#security-replacement">§ 5.3.1 Content Replacement</a>, there’s still room for attackers to deliver an older
+    <p>Even when signing additional metadata like <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-path" id="ref-for-name-path②"><code>@path</code></a> to prevent
+<a href="#security-replacement">§ 5.3.1 Content Replacement</a>, there’s still room for attackers to deliver an older
 version of a given response (perhaps one containing a vulnerability that was
 later patched). These rollback or downgrade attacks remain possible as long as
 signatures cover only content and location.</p>
-    <p>Developers can limit the efficacy of this kind of attack by specifying an <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.4" id="ref-for-section-2.3-4.4②"><code>expires</code></a> parameter in the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field①①">Signature-Input</a></code>` header when signing
+    <p>Developers can limit the efficacy of this kind of attack by specifying an
+<a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.4" id="ref-for-section-2.3-4.4②"><code>expires</code></a> parameter in the `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field①①">Signature-Input</a></code>` header when signing
 responses. This ensures that resources remain valid only for a finite period
 of time:</p>
 <pre class="language-http highlight"># This resource's signature will fail validation after Jan 1st, 2100.
@@ -1876,7 +2015,8 @@ worth building, two come to mind:</p>
     <ol>
      <li data-md>
       <p>We could allow site authors to require an <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.4" id="ref-for-section-2.3-4.4③"><code>expires</code></a> parameter in
-responses' `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field①②">Signature-Input</a></code>` on a request-by-request basis, or adjust the <a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri⑥">verification requirements for SRI</a> to require the attribute on all signed
+responses' `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field①②">Signature-Input</a></code>` on a request-by-request basis, or adjust the
+<a data-link-type="dfn" href="#verification-requirements-for-sri" id="ref-for-verification-requirements-for-sri⑥">verification requirements for SRI</a> to require the attribute on all signed
 resources.</p>
      <li data-md>
       <p>We could allow developers to send a challenge along with the request (as
@@ -1898,7 +2038,8 @@ page into a vulnerable state in the worst case.</p>
     <p>We can deal with this problem in a few ways:</p>
     <ol>
      <li data-md>
-      <p>Developers can use distinct keys for distinct categories of resource. If <code>good.js</code> is signed with key #1, and <code>bad.js</code> is signed with key #2, then
+      <p>Developers can use distinct keys for distinct categories of resource. If
+<code>good.js</code> is signed with key #1, and <code>bad.js</code> is signed with key #2, then
 integrity checks will prevent attackers from redirecting requests from the
 one to the other. This is effective, but relies on developers making good
 decisions about which keys to use where, and is somewhat fiddley from a
@@ -1907,12 +2048,23 @@ deployment perspective. Still, it is quite effective.</p>
       <p>We can incorporate redirect responses into the integrity checks, requiring
 that the entire chain be signed with the expected key(s). Redirect responses
 would be required to sign the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-status-code" id="ref-for-name-status-code②"><code>@status</code></a> derived component and the
-`<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9110.html#name-location" id="ref-for-name-location">Location</a></code>` header. This signature would be checked against the request’s <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①⑤">integrity metadata</a>, and rejected with a network error if verification
+`<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9110.html#name-location" id="ref-for-name-location">Location</a></code>` header. This signature would be checked against the request’s
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#concept-request-integrity-metadata" id="ref-for-concept-request-integrity-metadata①⑤">integrity metadata</a>, and rejected with a network error if verification
 fails.</p>
-      <p class="issue" id="issue-e9871abe"><a class="self-link" href="#issue-e9871abe"></a> Adjust the profile accordingly (or
-create a redirect-variant of the profile, which might be simpler), along
-with the Fetch integration. <a href="https://github.com/WICG/signature-based-sri/issues/45">[WICG/signature-based-sri Issue #45]</a></p>
+     <li data-md>
+      <p>We can provide some optional mechanism as part of the integrity metadata
+assertion which would require <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-path" id="ref-for-name-path③"><code>@path</code></a> assertions in the input,
+and that the signed path match the <code><a data-link-type="element-sub" href="https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src" id="ref-for-attr-script-src">src</a></code> attribute value to prevent
+redirection (e.g. <code>&lt;script ... integrity='ed25519-...?require-path-match'></code>).</p>
+      <p>As a variant of this path-based mechanism, we could create some kind of
+naming mechanism which would function similarly to a nonce, but critically
+be used every time a specific script was loaded
+(e.g. <code>integrity='ed25519-...?name=good.js</code>) and integrated into the
+signature.</p>
     </ol>
+    <p class="note" role="note"><span class="marker">Note:</span> For the moment, we’re leaning on #1, as that seems quite deployable based
+on some early experimental feedback. If it’s necessary (or desirable) to verify
+or restrict redirect responses, either #2 or #3 can be layered on as extensions.</p>
     <h2 class="heading settled" data-level="6" id="privacy"><span class="secno">6. </span><span class="content">Privacy Considerations</span><a class="self-link" href="#privacy"></a></h2>
     <p><strong>This section is non-normative.</strong></p>
     <p>Given that the validation of a response’s signature continues to require the
@@ -1937,7 +2089,7 @@ response’s body:</p>
 <pre class="language-console highlight">user@host:~/path$  echo -n <c- u>"{\"hello\": \"world\"}"</c-> <c- p>|</c-> openssl dgst -binary -sha256 <c- p>|</c-> base64
 X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=
 </pre>
-    <p>And send that digest along with the response via an `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①①">Unencoded-Digest</a></code>` header;</p>
+    <p>And send that digest along with the response via an `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①①">Unencoded-Digest</a></code>` header;</p>
 <pre class="highlight line-numbered"><span class="line-no"></span><span class="line"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c-> <c- ne>OK</c-></span><span class="line-no"></span><span class="line"><c- e>Date</c-><c- o>:</c-> <c- l>Tue, 20 Apr 2021 02:07:56 GMT</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Type</c-><c- o>:</c-> <c- l>application/json</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Length</c-><c- o>:</c-> <c- l>18</c-></span><span class="line-no highlight-line" data-line="5"></span><span class="line highlight-line"><c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:</c-></span><span class="line-no"></span><span class="line"></span><span class="line-no"></span><span class="line"><c- p>{</c-><c- f>"hello"</c-><c- p>:</c-> <c- u>"world"</c-><c- p>}</c-></span></pre>
     <p>Next, the developer will pick an Ed25519 public/private key pair to use when
 signing the response. Assume that they (through amazing coincidence!) generate
@@ -1966,7 +2118,7 @@ PEM format above, but the following tiny Python script will do the work:</p>
     print<c- p>(</c-><c- n>byte_string</c-><c- o>.</c-><c- n>decode</c-><c- p>(</c-><c- u>"utf-8"</c-><c- p>))</c->
 </pre>
     <p>With that encoding in hand, the developer can construct a `<code><a data-link-type="http-header" href="https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field" id="ref-for-name-the-signature-input-field①④">Signature-Input</a></code>`
-header that specifies the `<code><a data-link-type="http-header" href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①②">Unencoded-Digest</a></code>` header as a signed component,
+header that specifies the `<code><a data-link-type="http-header" href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field" id="ref-for-name-the-unencoded-digest-field①②">Unencoded-Digest</a></code>` header as a signed component,
 and includes the base64-encoded public key as the <a data-link-type="dfn" href="https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10" id="ref-for-section-2.3-4.10⑦"><code>keyid</code></a> parameter
 (as discussed in [#profile]):</p>
 <pre class="highlight line-numbered"><span class="line-no"></span><span class="line"><c- kr>HTTP</c-><c- o>/</c-><c- m>1.1</c-> <c- m>200</c-> <c- ne>OK</c-></span><span class="line-no"></span><span class="line"><c- e>Date</c-><c- o>:</c-> <c- l>Tue, 20 Apr 2021 02:07:56 GMT</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Type</c-><c- o>:</c-> <c- l>application/json</c-></span><span class="line-no"></span><span class="line"><c- e>Content-Length</c-><c- o>:</c-> <c- l>18</c-></span><span class="line-no"></span><span class="line"><c- e>Unencoded-Digest</c-><c- o>:</c-> <c- l>sha-256=:X48E9qOokqqrvdts8nOJRJN3OWDUoyWxBf7kbu9DBPE=:</c-></span><span class="line-no highlight-line" data-line="6"></span><span class="line highlight-line"><c- e>Signature-Input</c-><c- o>:</c-> <c- l>signature=("unencoded-digest";sf);keyid="JrQLj5P/89iXES9+vFgrIy29clF9CC/oPPsw3c5D0bs=";tag="ed25519-integrity"</c-></span><span class="line-no"></span><span class="line"></span><span class="line-no"></span><span class="line"><c- p>{</c-><c- f>"hello"</c-><c- p>:</c-> <c- u>"world"</c-><c- p>}</c-></span></pre>
@@ -1993,21 +2145,31 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
     in the normative parts of this document
     are to be interpreted as described in RFC 2119.
     However, for readability,
-    these words do not appear in all uppercase letters in this specification. </p>
+    these words do not appear in all uppercase letters in this specification.
+
+    </p>
    <p>All of the text of this specification is normative
-    except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">[RFC2119]</a> </p>
+    except sections explicitly marked as non-normative, examples, and notes. <a data-link-type="biblio" href="#biblio-rfc2119" title="Key words for use in RFCs to Indicate Requirement Levels">[RFC2119]</a>
+
+    </p>
    <p>Examples in this specification are introduced with the words “for example”
     or are set apart from the normative text
     with <code>class="example"</code>,
-    like this: </p>
+    like this:
+
+    </p>
    <div class="example" id="w3c-example">
-    <a class="self-link" href="#w3c-example"></a> 
-    <p>This is an example of an informative example. </p>
+    <a class="self-link" href="#w3c-example"></a>
+        
+    <p>This is an example of an informative example.
+    </p>
    </div>
    <p>Informative notes begin with the word “Note”
     and are set apart from the normative text
     with <code>class="note"</code>,
-    like this: </p>
+    like this:
+
+    </p>
    <p class="note" role="note">Note, this is an informative note.</p>
   </div>
   <script src="https://www.w3.org/scripts/TR/2021/fixup.js"></script>
@@ -2083,6 +2245,7 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
      <li><span class="dfn-paneled" id="6cfa013d">link</span>
      <li><span class="dfn-paneled" id="0cf3964f">script</span>
      <li><span class="dfn-paneled" id="65181da8">secure context</span>
+     <li><span class="dfn-paneled" id="03431bcb">src</span>
     </ul>
    <li>
     <a data-link-type="biblio">[HTTP-SEMANTICS]</a> defines the following terms:
@@ -2091,9 +2254,9 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
      <li><span class="dfn-paneled" id="0b8b6d6d">location</span>
     </ul>
    <li>
-    <a data-link-type="biblio">[ID.pardue-httpbis-identity-digest]</a> defines the following terms:
+    <a data-link-type="biblio">[ID.httpbis-unencoded-digest]</a> defines the following terms:
     <ul>
-     <li><span class="dfn-paneled" id="0b7f16b8">Unencoded-Digest</span>
+     <li><span class="dfn-paneled" id="381a7e0d">Unencoded-Digest</span>
     </ul>
    <li>
     <a data-link-type="biblio">[INFRA]</a> defines the following terms:
@@ -2118,7 +2281,6 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
      <li><span class="dfn-paneled" id="649608b9">list</span>
      <li><span class="dfn-paneled" id="84b454ff">ordered map</span>
      <li><span class="dfn-paneled" id="692595fe">ordered set</span>
-     <li><span class="dfn-paneled" id="0204d188">size</span>
      <li><span class="dfn-paneled" id="e5fc5b88">strictly split</span>
      <li><span class="dfn-paneled" id="0698d556">string</span>
     </ul>
@@ -2182,8 +2344,8 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
    <dd>Yoav Weiss. <a href="https://w3c.github.io/hr-time/"><cite>High Resolution Time</cite></a>. URL: <a href="https://w3c.github.io/hr-time/">https://w3c.github.io/hr-time/</a>
    <dt id="biblio-html">[HTML]
    <dd>Anne van Kesteren; et al. <a href="https://html.spec.whatwg.org/multipage/"><cite>HTML Standard</cite></a>. Living Standard. URL: <a href="https://html.spec.whatwg.org/multipage/">https://html.spec.whatwg.org/multipage/</a>
-   <dt id="biblio-idpardue-httpbis-identity-digest">[ID.pardue-httpbis-identity-digest]
-   <dd>Lucas Pardue; Mike West. <a href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html"><cite>HTTP Unencoded Digest</cite></a>. URL: <a href="https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html">https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html</a>
+   <dt id="biblio-idhttpbis-unencoded-digest">[ID.httpbis-unencoded-digest]
+   <dd>Lucas Pardue; Mike West. <a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html"><cite>HTTP Unencoded Digest</cite></a>. URL: <a href="https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html">https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html</a>
    <dt id="biblio-infra">[INFRA]
    <dd>Anne van Kesteren; Domenic Denicola. <a href="https://infra.spec.whatwg.org/"><cite>Infra Standard</cite></a>. Living Standard. URL: <a href="https://infra.spec.whatwg.org/">https://infra.spec.whatwg.org/</a>
    <dt id="biblio-rfc2119">[RFC2119]
@@ -2212,12 +2374,10 @@ Section 2.3 of <a data-link-type="biblio" href="#biblio-rfc9421" title="HTTP Mes
   </dl>
   <h2 class="no-num no-ref heading settled" id="issues-index"><span class="content">Issues Index</span><a class="self-link" href="#issues-index"></a></h2>
   <div style="counter-reset:issue">
-   <div class="issue"> To support this change, we also need to clean up the processing in <a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cors-safelisted-request-header">CORS-safelisted request-header</a> to support this header, as discussed in <a href="https://github.com/wicg/signature-based-sri/issues/21">[Issue #21]</a> <a class="issue-return" href="#issue-297cef4f" title="Jump to section">↵</a></div>
+   <div class="issue"> To support this change, we also need to clean up the processing in
+<a data-link-type="dfn" href="https://fetch.spec.whatwg.org/#cors-safelisted-request-header">CORS-safelisted request-header</a> to support this header, as discussed in <a href="https://github.com/wicg/signature-based-sri/issues/21">[Issue #21]</a> <a class="issue-return" href="#issue-297cef4f" title="Jump to section">↵</a></div>
    <div class="issue"> Should we try to leave some flexibility here for user agents
 to accept recently-expired signatures / deal with clock skew? <a href="https://github.com/wicg/signature-based-sri/issues/34">[Issue #34]</a> <a class="issue-return" href="#issue-e34631ac" title="Jump to section">↵</a></div>
-   <div class="issue"> Adjust the profile accordingly (or
-create a redirect-variant of the profile, which might be simpler), along
-with the Fetch integration. <a href="https://github.com/WICG/signature-based-sri/issues/45">[WICG/signature-based-sri Issue #45]</a> <a class="issue-return" href="#issue-e9871abe" title="Jump to section">↵</a></div>
   </div>
 <script>/* Boilerplate: script-dom-helper */
 "use strict";
@@ -2419,13 +2579,12 @@ function parseHTML(markup) {
 "use strict";
 {
 let dfnPanelData = {
-"0204d188": {"dfnID":"0204d188","dfnText":"size","external":true,"refSections":[{"refs":[{"id":"ref-for-list-size"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#list-size"},
+"03431bcb": {"dfnID":"03431bcb","dfnText":"src","external":true,"refSections":[{"refs":[{"id":"ref-for-attr-script-src"}],"title":"5.3.3. Redirection"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src"},
 "03afaf9c": {"dfnID":"03afaf9c","dfnText":"empty","external":true,"refSections":[{"refs":[{"id":"ref-for-list-empty"},{"id":"ref-for-list-empty\u2460"},{"id":"ref-for-list-empty\u2461"}],"title":"2.1.3. Do bytes and response match metadataList?"},{"refs":[{"id":"ref-for-list-empty\u2462"}],"title":"2.2.2.1. Append Accept-Signature"}],"url":"https://infra.spec.whatwg.org/#list-empty"},
 "03c8b9b5": {"dfnID":"03c8b9b5","dfnText":"Signature-Input","external":true,"refSections":[{"refs":[{"id":"ref-for-name-the-signature-input-field"},{"id":"ref-for-name-the-signature-input-field\u2460"},{"id":"ref-for-name-the-signature-input-field\u2461"}],"title":"1.2. Overview and Threat Model"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2462"},{"id":"ref-for-name-the-signature-input-field\u2463"},{"id":"ref-for-name-the-signature-input-field\u2464"},{"id":"ref-for-name-the-signature-input-field\u2465"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2466"}],"title":"2.2. Patches to Fetch"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2467"}],"title":"2.4.2. Signature and Signature-Input Enforcement"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2468"}],"title":"4.3. Key Discovery"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2460\u24ea"}],"title":"5.3.1. Content Replacement"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2460\u2460"},{"id":"ref-for-name-the-signature-input-field\u2460\u2461"},{"id":"ref-for-name-the-signature-input-field\u2460\u2462"}],"title":"5.3.2. Rollback Attacks"},{"refs":[{"id":"ref-for-name-the-signature-input-field\u2460\u2463"}],"title":"7. An End-to-End Example"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-the-signature-input-field"},
 "0698d556": {"dfnID":"0698d556","dfnText":"string","external":true,"refSections":[{"refs":[{"id":"ref-for-string"},{"id":"ref-for-string\u2460"}],"title":"2.1.4. Validate a signature over response using algorithm and public key"},{"refs":[{"id":"ref-for-string\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#string"},
 "08deeca5": {"dfnID":"08deeca5","dfnText":"content codings","external":true,"refSections":[{"refs":[{"id":"ref-for-name-content-codings"}],"title":"1.2. Overview and Threat Model"}],"url":"https://www.rfc-editor.org/rfc/rfc9110.html#name-content-codings"},
 "0950067d": {"dfnID":"0950067d","dfnText":"host-source","external":true,"refSections":[{"refs":[{"id":"ref-for-grammardef-host-source"}],"title":"2.3.1. Grammar"}],"url":"https://w3c.github.io/webappsec-csp/#grammardef-host-source"},
-"0b7f16b8": {"dfnID":"0b7f16b8","dfnText":"Unencoded-Digest","external":true,"refSections":[{"refs":[{"id":"ref-for-name-the-unencoded-digest-field"},{"id":"ref-for-name-the-unencoded-digest-field\u2460"},{"id":"ref-for-name-the-unencoded-digest-field\u2461"}],"title":"1.2. Overview and Threat Model"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2462"},{"id":"ref-for-name-the-unencoded-digest-field\u2463"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2464"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2465"}],"title":"2.2. Patches to Fetch"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2466"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2467"},{"id":"ref-for-name-the-unencoded-digest-field\u2468"}],"title":"2.4.1. Unencoded-Digest Validation"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2460\u24ea"}],"title":"5.3.1. Content Replacement"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2460\u2460"},{"id":"ref-for-name-the-unencoded-digest-field\u2460\u2461"}],"title":"7. An End-to-End Example"}],"url":"https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field"},
 "0b8b6d6d": {"dfnID":"0b8b6d6d","dfnText":"location","external":true,"refSections":[{"refs":[{"id":"ref-for-name-location"}],"title":"5.3.3. Redirection"}],"url":"https://www.rfc-editor.org/rfc/rfc9110.html#name-location"},
 "0cf3964f": {"dfnID":"0cf3964f","dfnText":"script","external":true,"refSections":[{"refs":[{"id":"ref-for-script"},{"id":"ref-for-script\u2460"}],"title":"1.2. Overview and Threat Model"},{"refs":[{"id":"ref-for-script\u2461"}],"title":"4.3. Key Discovery"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#script"},
 "0ddb0f61": {"dfnID":"0ddb0f61","dfnText":"keyid","external":true,"refSections":[{"refs":[{"id":"ref-for-section-2.3-4.10"},{"id":"ref-for-section-2.3-4.10\u2460"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-section-2.3-4.10\u2461"},{"id":"ref-for-section-2.3-4.10\u2462"}],"title":"2.1.4. Validate a signature over response using algorithm and public key"},{"refs":[{"id":"ref-for-section-2.3-4.10\u2463"}],"title":"2.2.2.1. Append Accept-Signature"},{"refs":[{"id":"ref-for-section-2.3-4.10\u2464"}],"title":"2.4.2. Signature and Signature-Input Enforcement"},{"refs":[{"id":"ref-for-section-2.3-4.10\u2465"}],"title":"4.3. Key Discovery"},{"refs":[{"id":"ref-for-section-2.3-4.10\u2466"}],"title":"7. An End-to-End Example"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.10"},
@@ -2438,6 +2597,7 @@ let dfnPanelData = {
 "2531df1b": {"dfnID":"2531df1b","dfnText":"req","external":true,"refSections":[{"refs":[{"id":"ref-for-section-2.4-2.2.1"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#section-2.4-2.2.1"},
 "35b98f13": {"dfnID":"35b98f13","dfnText":"set a structured field value","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-header-list-set-structured-header"}],"title":"2.2.2. HTTP-network-or-cache Fetch"}],"url":"https://fetch.spec.whatwg.org/#concept-header-list-set-structured-header"},
 "36333997": {"dfnID":"36333997","dfnText":"length","external":true,"refSections":[{"refs":[{"id":"ref-for-byte-sequence-length"},{"id":"ref-for-byte-sequence-length\u2460"},{"id":"ref-for-byte-sequence-length\u2461"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-byte-sequence-length\u2462"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#byte-sequence-length"},
+"381a7e0d": {"dfnID":"381a7e0d","dfnText":"Unencoded-Digest","external":true,"refSections":[{"refs":[{"id":"ref-for-name-the-unencoded-digest-field"},{"id":"ref-for-name-the-unencoded-digest-field\u2460"},{"id":"ref-for-name-the-unencoded-digest-field\u2461"}],"title":"1.2. Overview and Threat Model"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2462"},{"id":"ref-for-name-the-unencoded-digest-field\u2463"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2464"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2465"}],"title":"2.2. Patches to Fetch"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2466"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2467"},{"id":"ref-for-name-the-unencoded-digest-field\u2468"}],"title":"2.4.1. Unencoded-Digest Validation"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2460\u24ea"}],"title":"5.3.1. Content Replacement"},{"refs":[{"id":"ref-for-name-the-unencoded-digest-field\u2460\u2460"},{"id":"ref-for-name-the-unencoded-digest-field\u2460\u2461"}],"title":"7. An End-to-End Example"}],"url":"https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field"},
 "3c74c545": {"dfnID":"3c74c545","dfnText":"keyword-source","external":true,"refSections":[{"refs":[{"id":"ref-for-grammardef-keyword-source"}],"title":"2.3.1. Grammar"}],"url":"https://w3c.github.io/webappsec-csp/#grammardef-keyword-source"},
 "3dc5399b": {"dfnID":"3dc5399b","dfnText":"integrity","external":true,"refSections":[{"refs":[{"id":"ref-for-attr-script-integrity"}],"title":"1.2. Overview and Threat Model"},{"refs":[{"id":"ref-for-attr-script-integrity\u2460"}],"title":"4.3. Key Discovery"}],"url":"https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity"},
 "3de9e659": {"dfnID":"3de9e659","dfnText":"byte sequence","external":true,"refSections":[{"refs":[{"id":"ref-for-byte-sequence"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-byte-sequence\u2460"}],"title":"2.1.3. Do bytes and response match metadataList?"},{"refs":[{"id":"ref-for-byte-sequence\u2461"}],"title":"2.4. Server-Initiated Integrity Checks"},{"refs":[{"id":"ref-for-byte-sequence\u2462"}],"title":"2.4.1. Unencoded-Digest Validation"},{"refs":[{"id":"ref-for-byte-sequence\u2463"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#byte-sequence"},
@@ -2460,7 +2620,7 @@ let dfnPanelData = {
 "6ee0eab1": {"dfnID":"6ee0eab1","dfnText":"header list (for request)","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-request-header-list"}],"title":"2.2.2. HTTP-network-or-cache Fetch"},{"refs":[{"id":"ref-for-concept-request-header-list\u2460"},{"id":"ref-for-concept-request-header-list\u2461"}],"title":"2.2.2.1. Append Accept-Signature"}],"url":"https://fetch.spec.whatwg.org/#concept-request-header-list"},
 "6f2dfa22": {"dfnID":"6f2dfa22","dfnText":"ASCII lowercase","external":true,"refSections":[{"refs":[{"id":"ref-for-ascii-lowercase"}],"title":"2.1.2. Parse metadata."}],"url":"https://infra.spec.whatwg.org/#ascii-lowercase"},
 "73e75483": {"dfnID":"73e75483","dfnText":"forgiving-base64 decode","external":true,"refSections":[{"refs":[{"id":"ref-for-forgiving-base64-decode"}],"title":"2.1.4. Validate a signature over response using algorithm and public key"},{"refs":[{"id":"ref-for-forgiving-base64-decode\u2460"},{"id":"ref-for-forgiving-base64-decode\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#forgiving-base64-decode"},
-"75393c04": {"dfnID":"75393c04","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-list-contain\u2460"},{"id":"ref-for-list-contain\u2461"}],"title":"2.1.2. Parse metadata."},{"refs":[{"id":"ref-for-list-contain\u2462"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-list-contain\u2463"},{"id":"ref-for-list-contain\u2464"}],"title":"2.3.2. Matching Integrity Metadata"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
+"75393c04": {"dfnID":"75393c04","dfnText":"exist","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-list-contain\u2460"},{"id":"ref-for-list-contain\u2461"}],"title":"2.1.2. Parse metadata."},{"refs":[{"id":"ref-for-list-contain\u2462"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-list-contain\u2463"},{"id":"ref-for-list-contain\u2464"}],"title":"2.3.2. Matching Integrity Metadata"},{"refs":[{"id":"ref-for-list-contain\u2465"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
 "75aafb4f": {"dfnID":"75aafb4f","dfnText":"source lists","external":true,"refSections":[{"refs":[{"id":"ref-for-source-lists"},{"id":"ref-for-source-lists\u2460"},{"id":"ref-for-source-lists\u2461"}],"title":"2.3.2. Matching Integrity Metadata"}],"url":"https://w3c.github.io/webappsec-csp/#source-lists"},
 "7660bec4": {"dfnID":"7660bec4","dfnText":"parameters","external":true,"refSections":[{"refs":[{"id":"ref-for-name-parameters"},{"id":"ref-for-name-parameters\u2460"},{"id":"ref-for-name-parameters\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://www.rfc-editor.org/rfc/rfc9651#name-parameters"},
 "78d98836": {"dfnID":"78d98836","dfnText":"@request-target","external":true,"refSections":[{"refs":[{"id":"ref-for-name-request-target"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-request-target"},
@@ -2471,7 +2631,7 @@ let dfnPanelData = {
 "84b454ff": {"dfnID":"84b454ff","dfnText":"ordered map","external":true,"refSections":[{"refs":[{"id":"ref-for-ordered-map"}],"title":"2.1.2. Parse metadata."}],"url":"https://infra.spec.whatwg.org/#ordered-map"},
 "8a608b90": {"dfnID":"8a608b90","dfnText":"value","external":true,"refSections":[{"refs":[{"id":"ref-for-concept-header-value"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"}],"url":"https://fetch.spec.whatwg.org/#concept-header-value"},
 "8e6d52cb": {"dfnID":"8e6d52cb","dfnText":"@query-param","external":true,"refSections":[{"refs":[{"id":"ref-for-name-query-parameters"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-query-parameters"},
-"91d655c0": {"dfnID":"91d655c0","dfnText":"@path","external":true,"refSections":[{"refs":[{"id":"ref-for-name-path"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-name-path\u2460"}],"title":"5.3.1. Content Replacement"},{"refs":[{"id":"ref-for-name-path\u2461"}],"title":"5.3.2. Rollback Attacks"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-path"},
+"91d655c0": {"dfnID":"91d655c0","dfnText":"@path","external":true,"refSections":[{"refs":[{"id":"ref-for-name-path"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-name-path\u2460"}],"title":"5.3.1. Content Replacement"},{"refs":[{"id":"ref-for-name-path\u2461"}],"title":"5.3.2. Rollback Attacks"},{"refs":[{"id":"ref-for-name-path\u2462"}],"title":"5.3.3. Redirection"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-path"},
 "99f492fd": {"dfnID":"99f492fd","dfnText":"CORS-safelisted request-header","external":true,"refSections":[{"refs":[{"id":"ref-for-cors-safelisted-request-header"}],"title":"2.2.2.1. Append Accept-Signature"}],"url":"https://fetch.spec.whatwg.org/#cors-safelisted-request-header"},
 "9c57c2af": {"dfnID":"9c57c2af","dfnText":"alg","external":true,"refSections":[{"refs":[{"id":"ref-for-section-2.3-4.8"},{"id":"ref-for-section-2.3-4.8\u2460"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"},{"refs":[{"id":"ref-for-section-2.3-4.8\u2461"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#section-2.3-4.8"},
 "a326add7": {"dfnID":"a326add7","dfnText":"contain (for map)","external":true,"refSections":[{"refs":[{"id":"ref-for-map-exists"},{"id":"ref-for-map-exists\u2460"},{"id":"ref-for-map-exists\u2461"},{"id":"ref-for-map-exists\u2462"},{"id":"ref-for-map-exists\u2463"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#map-exists"},
@@ -2486,8 +2646,8 @@ let dfnPanelData = {
 "abstract-opdef-validating-an-integrity-signature": {"dfnID":"abstract-opdef-validating-an-integrity-signature","dfnText":"validate an integrity signature","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-validating-an-integrity-signature"}],"title":"2.1.3. Do bytes and response match metadataList?"}],"url":"#abstract-opdef-validating-an-integrity-signature"},
 "abstract-opdef-verify-sri-message-signature-assertions": {"dfnID":"abstract-opdef-verify-sri-message-signature-assertions","dfnText":"verify SRI Message Signature assertions","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-verify-sri-message-signature-assertions"}],"title":"2.4. Server-Initiated Integrity Checks"}],"url":"#abstract-opdef-verify-sri-message-signature-assertions"},
 "abstract-opdef-verify-unencoded-digest-assertions": {"dfnID":"abstract-opdef-verify-unencoded-digest-assertions","dfnText":"verify Unencoded-Digest assertions","external":false,"refSections":[{"refs":[{"id":"ref-for-abstract-opdef-verify-unencoded-digest-assertions"}],"title":"2.4. Server-Initiated Integrity Checks"}],"url":"#abstract-opdef-verify-unencoded-digest-assertions"},
-"ac57951b": {"dfnID":"ac57951b","dfnText":"component identifier","external":true,"refSections":[{"refs":[{"id":"ref-for-covered-components"},{"id":"ref-for-covered-components\u2460"},{"id":"ref-for-covered-components\u2461"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#covered-components"},
-"ae8def21": {"dfnID":"ae8def21","dfnText":"contain (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-list-contain\u2460"},{"id":"ref-for-list-contain\u2461"}],"title":"2.1.2. Parse metadata."},{"refs":[{"id":"ref-for-list-contain\u2462"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-list-contain\u2463"},{"id":"ref-for-list-contain\u2464"}],"title":"2.3.2. Matching Integrity Metadata"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
+"ac57951b": {"dfnID":"ac57951b","dfnText":"component identifier","external":true,"refSections":[{"refs":[{"id":"ref-for-covered-components"},{"id":"ref-for-covered-components\u2460"},{"id":"ref-for-covered-components\u2461"},{"id":"ref-for-covered-components\u2462"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#covered-components"},
+"ae8def21": {"dfnID":"ae8def21","dfnText":"contain (for list)","external":true,"refSections":[{"refs":[{"id":"ref-for-list-contain"}],"title":"2.1.1.1. Unencoded-Digest Validation for SRI"},{"refs":[{"id":"ref-for-list-contain\u2460"},{"id":"ref-for-list-contain\u2461"}],"title":"2.1.2. Parse metadata."},{"refs":[{"id":"ref-for-list-contain\u2462"}],"title":"2.2.1. Main Fetch"},{"refs":[{"id":"ref-for-list-contain\u2463"},{"id":"ref-for-list-contain\u2464"}],"title":"2.3.2. Matching Integrity Metadata"},{"refs":[{"id":"ref-for-list-contain\u2465"}],"title":"2.4.2. Signature and Signature-Input Enforcement"}],"url":"https://infra.spec.whatwg.org/#list-contain"},
 "b012ccb2": {"dfnID":"b012ccb2","dfnText":"forgiving-base64 encode","external":true,"refSections":[{"refs":[{"id":"ref-for-forgiving-base64-encode"},{"id":"ref-for-forgiving-base64-encode\u2460"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://infra.spec.whatwg.org/#forgiving-base64-encode"},
 "b36452d7": {"dfnID":"b36452d7","dfnText":"source expression","external":true,"refSections":[{"refs":[{"id":"ref-for-source-expression"},{"id":"ref-for-source-expression\u2460"},{"id":"ref-for-source-expression\u2461"},{"id":"ref-for-source-expression\u2462"}],"title":"2.3.2. Matching Integrity Metadata"}],"url":"https://w3c.github.io/webappsec-csp/#source-expression"},
 "bd0a4447": {"dfnID":"bd0a4447","dfnText":"@target-uri","external":true,"refSections":[{"refs":[{"id":"ref-for-name-target-uri"}],"title":"2.1.1. The SRI HTTP Message Signature Profile"}],"url":"https://www.rfc-editor.org/rfc/rfc9421.html#name-target-uri"},
@@ -2942,6 +3102,7 @@ let refsData = {
 "https://fetch.spec.whatwg.org/#fetch-finale": {"displayText":"fetch response handover","export":true,"for_":[],"level":"","normative":true,"shortname":"fetch","spec":"fetch","status":"anchor-block","text":"fetch response handover","type":"dfn","url":"https://fetch.spec.whatwg.org/#fetch-finale"},
 "https://fetch.spec.whatwg.org/#header-list-contains": {"displayText":"contains","export":true,"for_":["header list"],"level":"1","normative":true,"shortname":"fetch","spec":"fetch","status":"current","text":"contains","type":"dfn","url":"https://fetch.spec.whatwg.org/#header-list-contains"},
 "https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity": {"displayText":"integrity","export":true,"for_":["script"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"integrity","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/scripting.html#attr-script-integrity"},
+"https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src": {"displayText":"src","export":true,"for_":["script"],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"src","type":"element-attr","url":"https://html.spec.whatwg.org/multipage/scripting.html#attr-script-src"},
 "https://html.spec.whatwg.org/multipage/scripting.html#script": {"displayText":"script","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"script","type":"element","url":"https://html.spec.whatwg.org/multipage/scripting.html#script"},
 "https://html.spec.whatwg.org/multipage/semantics.html#the-link-element": {"displayText":"link","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"link","type":"element","url":"https://html.spec.whatwg.org/multipage/semantics.html#the-link-element"},
 "https://html.spec.whatwg.org/multipage/webappapis.html#secure-context": {"displayText":"secure context","export":true,"for_":[],"level":"1","normative":true,"shortname":"html","spec":"html","status":"current","text":"secure context","type":"dfn","url":"https://html.spec.whatwg.org/multipage/webappapis.html#secure-context"},
@@ -2956,7 +3117,6 @@ let refsData = {
 "https://infra.spec.whatwg.org/#list-append": {"displayText":"append","export":true,"for_":["list"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"append","type":"dfn","url":"https://infra.spec.whatwg.org/#list-append"},
 "https://infra.spec.whatwg.org/#list-contain": {"displayText":"contain","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"contain","type":"dfn","url":"https://infra.spec.whatwg.org/#list-contain"},
 "https://infra.spec.whatwg.org/#list-empty": {"displayText":"empty","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"empty","type":"dfn","url":"https://infra.spec.whatwg.org/#list-empty"},
-"https://infra.spec.whatwg.org/#list-size": {"displayText":"size","export":true,"for_":["list","stack","queue","set"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"size","type":"dfn","url":"https://infra.spec.whatwg.org/#list-size"},
 "https://infra.spec.whatwg.org/#map-exists": {"displayText":"contain","export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"contain","type":"dfn","url":"https://infra.spec.whatwg.org/#map-exists"},
 "https://infra.spec.whatwg.org/#map-is-empty": {"displayText":"is empty","export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"is empty","type":"dfn","url":"https://infra.spec.whatwg.org/#map-is-empty"},
 "https://infra.spec.whatwg.org/#map-iterate": {"displayText":"iterate","export":true,"for_":["map"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"iterate","type":"dfn","url":"https://infra.spec.whatwg.org/#map-iterate"},
@@ -2967,7 +3127,6 @@ let refsData = {
 "https://infra.spec.whatwg.org/#string": {"displayText":"string","export":true,"for_":[],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"string","type":"dfn","url":"https://infra.spec.whatwg.org/#string"},
 "https://infra.spec.whatwg.org/#string-concatenate": {"displayText":"concatenation","export":true,"for_":["string"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"concatenation","type":"dfn","url":"https://infra.spec.whatwg.org/#string-concatenate"},
 "https://infra.spec.whatwg.org/#string-is": {"displayText":"is","export":true,"for_":["string"],"level":"1","normative":true,"shortname":"infra","spec":"infra","status":"current","text":"is","type":"dfn","url":"https://infra.spec.whatwg.org/#string-is"},
-"https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field": {"displayText":"Unencoded-Digest","export":true,"for_":[],"level":"","normative":true,"shortname":"id.pardue-httpbis-identity-digest","spec":"id.pardue-httpbis-identity-digest","status":"anchor-block","text":"unencoded-digest","type":"http-header","url":"https://lpardue.github.io/draft-pardue-http-identity-digest/draft-pardue-httpbis-identity-digest.html#name-the-unencoded-digest-field"},
 "https://w3c.github.io/hr-time/#dfn-unix-epoch": {"displayText":"unix epoch","export":true,"for_":[],"level":"3","normative":true,"shortname":"hr-time","spec":"hr-time-3","status":"current","text":"unix epoch","type":"dfn","url":"https://w3c.github.io/hr-time/#dfn-unix-epoch"},
 "https://w3c.github.io/hr-time/#wall-clock-unsafe-current-time": {"displayText":"unsafe current time","export":true,"for_":["wall clock"],"level":"3","normative":true,"shortname":"hr-time","spec":"hr-time-3","status":"current","text":"unsafe current time","type":"dfn","url":"https://w3c.github.io/hr-time/#wall-clock-unsafe-current-time"},
 "https://w3c.github.io/webappsec-csp/#grammardef-base64-value": {"displayText":"base64-value","export":true,"for_":[],"level":"3","normative":true,"shortname":"csp","spec":"csp3","status":"current","text":"base64-value","type":"grammar","url":"https://w3c.github.io/webappsec-csp/#grammardef-base64-value"},
@@ -2981,6 +3140,7 @@ let refsData = {
 "https://w3c.github.io/webappsec-csp/#source-lists": {"displayText":"source lists","export":true,"for_":[],"level":"3","normative":true,"shortname":"csp","spec":"csp3","status":"current","text":"source lists","type":"dfn","url":"https://w3c.github.io/webappsec-csp/#source-lists"},
 "https://w3c.github.io/webappsec-fetch-metadata/#abstract-opdef-append-the-fetch-metadata-headers-for-a-request": {"displayText":"append the Fetch metadata headers for a request","export":true,"for_":[],"level":"1","normative":true,"shortname":"fetch-metadata","spec":"fetch-metadata","status":"current","text":"append the Fetch metadata headers for a request","type":"abstract-op","url":"https://w3c.github.io/webappsec-fetch-metadata/#abstract-opdef-append-the-fetch-metadata-headers-for-a-request"},
 "https://w3c.github.io/webappsec-subresource-integrity/#valid-sri-hash-algorithm-token": {"displayText":"valid SRI hash algorithm token","export":true,"for_":[],"level":"","normative":true,"shortname":"sri","spec":"sri","status":"anchor-block","text":"valid sri hash algorithm token","type":"dfn","url":"https://w3c.github.io/webappsec-subresource-integrity/#valid-sri-hash-algorithm-token"},
+"https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field": {"displayText":"Unencoded-Digest","export":true,"for_":[],"level":"","normative":true,"shortname":"id.httpbis-unencoded-digest","spec":"id.httpbis-unencoded-digest","status":"anchor-block","text":"unencoded-digest","type":"http-header","url":"https://www.ietf.org/archive/id/draft-ietf-httpbis-unencoded-digest-01.html#name-the-unencoded-digest-field"},
 "https://www.rfc-editor.org/rfc/rfc9110.html#name-content-codings": {"displayText":"content codings","export":true,"for_":[],"level":"","normative":true,"shortname":"http-semantics","spec":"http-semantics","status":"anchor-block","text":"content codings","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9110.html#name-content-codings"},
 "https://www.rfc-editor.org/rfc/rfc9110.html#name-location": {"displayText":"location","export":true,"for_":[],"level":"","normative":true,"shortname":"http-semantics","spec":"http-semantics","status":"anchor-block","text":"location","type":"http-header","url":"https://www.rfc-editor.org/rfc/rfc9110.html#name-location"},
 "https://www.rfc-editor.org/rfc/rfc9421.html#covered-components": {"displayText":"component identifier","export":true,"for_":[],"level":"","normative":true,"shortname":"rfc9421","spec":"rfc9421","status":"anchor-block","text":"component identifier","type":"dfn","url":"https://www.rfc-editor.org/rfc/rfc9421.html#covered-components"},
