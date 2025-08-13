@@ -1006,9 +1006,6 @@ following steps. They return "`verified`" or "`failed`":
         is greater than the number of seconds between the [=Unix epoch=] and the
         [=wall clock/unsafe current time=], return "`failed`".
 
-        ISSUE(34): Should we try to leave some flexibility here for user agents
-        to accept recently-expired signatures / deal with clock skew?
-        
     6.  Let |signature-params| be the result of executing the algorithm in
         [Section 2.3](https://www.rfc-editor.org/rfc/rfc9421.html#signature-params)
         of [[!RFC9421]] on |components|, treating all specified
