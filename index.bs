@@ -72,6 +72,7 @@ urlPrefix: https://www.rfc-editor.org/rfc/rfc9110.html; spec: HTTP-SEMANTICS
 <pre class="link-defaults">
 spec:html; type:element; text:script
 spec:html; type:element; text:link
+spec:infra; type:dfn; text:success
 </pre>
 <pre class="biblio">
 {
@@ -931,6 +932,27 @@ To <dfn abstract-op>perform server-initiated integrity checks</dfn> given a
 
 ### `Unencoded-Digest` Validation ### {#unencoded-digest-validation}
 
+<div algorithm="enforcable unencoded-digest header">
+A [=/Response=] (|response|) <dfn local-lt="enforcable digest">contains an enforcable
+`Unencoded-Digest` header</dfn> if the following algorithm returns [=success=]:
+
+1.  Let |header| be the result of [=header list/get a structured field value|getting=]
+    the [:Unencoded-Digest:] header as a "<a for="structured header">`dictionary`</a>"
+    from |response|'s [=response/header list=].
+
+2.  If |header| is `null`, return [=failure=].
+
+3.  [=map/iterate|For each=] |alg| of |header|'s [=map/keys=]:
+
+    1.  If |alg| is either "sha-256" or "sha-512", return [=success=].
+
+4.  Return [=failure=].
+
+Note: We require the [:Unencoded-Digest:] header to contain a known algorithm when verifying
+a signature, as we'd otherwise blindly accept it without enforcement during validation.
+
+</div>
+
 <div algorithm="unencoded-digest validation">
 To <dfn abstract-op>verify `Unencoded-Digest` assertions</dfn> given a
 [=byte sequence=] (|bytes|) and a [=/response=] (|response|), execute the
@@ -944,7 +966,7 @@ following steps. They return "`verified`" or "`failed`":
 
 3.  [=map/iterate|For each=] |alg| → |digest| of |header|:
 
-    1.  If |alg| is not one of "sha-256", "sha-384", or "sha-512", then [=continue=].
+    1.  If |alg| is not one of "sha-256" or "sha-512", then [=continue=].
 
     2.  Let |body digest| be the result of executing [[SRI#apply-algorithm-to-response]]
         on |alg| and |bytes|.
@@ -980,7 +1002,10 @@ following steps. They return "`verified`" or "`failed`":
     the [:Signature:] header as a "<a for="structured header">`dictionary`</a>" from
     |response|'s [=response/header list=].
 
-3.  [=map/iterate|For each=] |key| → |components| of |inputs|:
+3.  If |response| does not [=enforcable digest|contain an enforcable `Unencoded-Digest` header=],
+    return "`failed`".
+
+4.  [=map/iterate|For each=] |key| → |components| of |inputs|:
 
     1.  If |signatures| does not [=map/contain=] |key|, [=continue=].
 
@@ -1030,7 +1055,7 @@ following steps. They return "`verified`" or "`failed`":
 
     10. If verification failed, return "`failed`".
 
-4.  Return "`verified`".
+5.  Return "`verified`".
 
 Note: This is a reformulation and simplification of the steps described in
 [Section 3.2](https://www.rfc-editor.org/rfc/rfc9421.html#name-verifying-a-signature)
