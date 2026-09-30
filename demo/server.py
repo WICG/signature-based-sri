@@ -1,7 +1,7 @@
-import BaseHTTPServer
+from http.server import BaseHTTPRequestHandler, HTTPServer
 import re
 
-class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class RequestHandler(BaseHTTPRequestHandler):
     def do_GET(self):
         resource_file = "index.html"
         resource_type = "text/html"
@@ -20,12 +20,14 @@ class RequestHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 
         self.send_response(200)
         self.send_header('Content-Type', resource_type)
-        if signature is not "":
+        if signature != "":
             self.send_header("Integrity", signature)
         self.end_headers()
 
-        self.wfile.write(file(resource_file).read())
+        with open(resource_file, 'rb') as f:
+            self.wfile.write(f.read())
 
 if __name__ == "__main__":
-    httpd = BaseHTTPServer.HTTPServer(('', 8000), RequestHandler)
+    httpd = HTTPServer(('', 8000), RequestHandler)
+    print("Server running on http://127.0.0.1:8000/")
     httpd.serve_forever()
